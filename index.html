@@ -6,7 +6,7 @@
   <title>Distribución de Personal OPORMEX</title>
 
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     *{ box-sizing:border-box; }
@@ -168,12 +168,18 @@
       </div>
 
       <div id="diag">Cargando…</div>
+      <div id="diag"
+     style="position:absolute;top:12px;right:12px;z-index:999;
+            background:rgba(0,0,0,.75);color:#fff;
+            padding:8px 10px;border-radius:10px;font-size:12px;">
+  Diagnóstico: iniciando…
+</div>
       <div id="map"></div>
     </section>
   </div>
 
   <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     // Mostrar errores en pantalla (diagnóstico)
@@ -409,3 +415,6 @@
   </script>
 </body>
 </html>
+diag.textContent = "Diagnóstico: mapa cargado correctamente.";
+setTimeout(function(){ diag.style.display = "none"; }, 2500);
+
