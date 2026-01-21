@@ -108,9 +108,9 @@
     // ==========================
     // Cambia estos hex para tus colores deseados.
     const COLORS = {
-      Aeropuerto: "#2563eb", // azul
-      Puerto:     "#16a34a", // verde
-      Frontera:   "#dc2626", // rojo
+      Aeropuerto: "#91CBF3", // azul
+      Puerto:     "#B1F68E", // verde
+      Frontera:   "#F9BD8B", // rojo
       Default:    "#6b7280"  // gris
     };
 
@@ -333,9 +333,3 @@
   </script>
 </body>
 </html>
-const COLORS = {
-  Aeropuerto: "#B1F68E",
-  Puerto:     "#91CBF3",
-  Frontera:   "#F9BD8B",
-  Default:    "#6b7280"
-};
