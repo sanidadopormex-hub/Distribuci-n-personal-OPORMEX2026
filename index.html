@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Distribución de Personal OPORMEX</title>
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+  <!-- Leaflet CSS (jsDelivr) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
     *{ box-sizing:border-box; }
     html, body{ height:100%; margin:0; font-family: Arial, sans-serif; }
 
     :root{
-      --banner:#2b3849;
+      --banner:#2f4154;
       --border:#e5e7eb;
       --muted:#6b7280;
     }
@@ -29,7 +30,7 @@
 
     .app{
       display:flex;
-      height: 820px;       /* estable en iframes/Sites */
+      height: 820px;
       min-height: 700px;
     }
 
@@ -72,7 +73,7 @@
     #map{
       width:100%;
       height:100%;
-      min-height: 700px;
+      min-height:700px;
     }
 
     .mapTopBar{
@@ -94,22 +95,18 @@
       box-shadow:0 1px 8px rgba(0,0,0,.08);
     }
 
-    /* Diagnóstico */
     #diag{
       position:absolute;
       top:12px;
       right:12px;
-      z-index:600;
+      z-index:999;
       background:rgba(0,0,0,.75);
       color:#fff;
       padding:8px 10px;
       border-radius:10px;
       font-size:12px;
-      max-width: 360px;
-      line-height: 1.35;
     }
 
-    /* Leyenda */
     .legend{
       background:rgba(255,255,255,.95);
       padding:10px 12px;
@@ -128,293 +125,209 @@
 </head>
 
 <body>
-  <div class="banner">
-    <h1>Distribución de Personal</h1>
-    <p>2026</p>
-  </div>
 
-  <div class="app">
-    <aside id="sidebar">
-      <h3>Filtrar por Tipo de Oficina</h3>
-
-      <div class="row"><label><input type="checkbox" id="fAeropuerto" checked> Aeropuerto</label></div>
-      <div class="row"><label><input type="checkbox" id="fPuerto" checked> Puerto</label></div>
-      <div class="row"><label><input type="checkbox" id="fFrontera" checked> Frontera</label></div>
-
-      <hr>
-
-      <h3>Filtrar por Estado</h3>
-      <div class="row">
-        <select id="estadoSelect">
-          <option value="__ALL__">Todos</option>
-        </select>
-      </div>
-
-      <div class="row">
-        <button id="btnReset">Restablecer filtros</button>
-      </div>
-
-      <p class="muted">
-        Los filtros aplican por OISA (un marcador por oficina).<br>
-        En Google Sites, ajusta la altura del embed.
-      </p>
-    </aside>
-
-    <section id="mapWrap">
-      <div class="mapTopBar">
-        <div class="pill"><strong>Distribución del personal OPORMEX</strong></div>
-        <div class="pill">Agrupado por OISA</div>
-        <div class="pill" id="visibleCount">OISAs visibles: —</div>
-      </div>
-
-      <div id="diag">Cargando…</div>
-      <div id="diag"
-     style="position:absolute;top:12px;right:12px;z-index:999;
-            background:rgba(0,0,0,.75);color:#fff;
-            padding:8px 10px;border-radius:10px;font-size:12px;">
-  Diagnóstico: iniciando…
+<div class="banner">
+  <h1>Distribución de Personal</h1>
+  <p>2026</p>
 </div>
-      <div id="map"></div>
-    </section>
-  </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<div class="app">
 
-  <script>
-    // Mostrar errores en pantalla (diagnóstico)
-    (function(){
-      var diag = document.getElementById("diag");
-      window.onerror = function(msg, src, line, col){
-        diag.innerHTML = "Error JS: " + msg + "<br>Linea: " + line + ":" + col;
-        return false;
-      };
+  <aside id="sidebar">
+    <h3>Filtrar por Tipo de Oficina</h3>
 
-      // 1) Verificar Leaflet
-      if (typeof L === "undefined") {
-        diag.innerHTML = "Leaflet NO cargó. Revisa si tu red bloquea unpkg.com";
-        return;
-      }
-      diag.innerHTML = "Leaflet cargado. Inicializando mapa…";
+    <div class="row"><label><input type="checkbox" id="fAeropuerto" checked> Aeropuerto</label></div>
+    <div class="row"><label><input type="checkbox" id="fPuerto" checked> Puerto</label></div>
+    <div class="row"><label><input type="checkbox" id="fFrontera" checked> Frontera</label></div>
 
-      // 2) Colores (los tuyos)
-      var COLORS = {
-        Aeropuerto: "#98D80A",
-        Puerto:     "#0A9FC2",
-        Frontera:   "#FA8F00",
-        Default:    "#cbcbcb"
-      };
-      function colorPorTipo(tipo){ return COLORS[tipo] || COLORS.Default; }
+    <hr>
 
-      // 3) Inicializar mapa
-      var map = L.map("map").setView([23.6345, -102.5528], 5);
+    <h3>Filtrar por Estado</h3>
+    <div class="row">
+      <select id="estadoSelect">
+        <option value="__ALL__">Todos</option>
+      </select>
+    </div>
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "&copy; OpenStreetMap contributors"
-      }).addTo(map);
+    <div class="row">
+      <button id="btnReset">Restablecer filtros</button>
+    </div>
 
-      // 4) Recalcular tamaño (clave en iframes)
-      setTimeout(function(){ map.invalidateSize(true); }, 300);
-      window.addEventListener("resize", function(){ map.invalidateSize(true); });
+    <p class="muted">
+      Los filtros aplican por OISA (un marcador por oficina).<br>
+      En Google Sites ajusta la altura del embed.
+    </p>
+  </aside>
 
-      // 5) OISAs
-      var oisas = {
-        "AICM": { estado:"CDMX", tipo:"Aeropuerto", lat:19.4351, lng:-99.0713 },
-        "AIFA": { estado:"Estado de México", tipo:"Aeropuerto", lat:19.7418, lng:-99.0132 },
-        "Cancún": { estado:"Quintana Roo", tipo:"Aeropuerto", lat:21.0353, lng:-86.8728 },
-        "Cd. Hidalgo": { estado:"Chiapas", tipo:"Frontera", lat:14.6796, lng:-92.1526 },
-        "Guadalajara": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.5218, lng:-103.3111 },
-        "Manzanillo": { estado:"Colima", tipo:"Puerto", lat:19.0676, lng:-104.2914 },
-        "Mérida": { estado:"Yucatán", tipo:"Aeropuerto", lat:20.9370, lng:-89.6577 },
-        "Monterrey": { estado:"Nuevo León", tipo:"Aeropuerto", lat:25.7749, lng:-100.1139 },
-        "Nuevo Laredo": { estado:"Tamaulipas", tipo:"Frontera", lat:27.4763, lng:-99.5164 },
-        "Puerto Vallarta": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.6800, lng:-105.2500 },
-        "Tijuana": { estado:"Baja California", tipo:"Frontera", lat:32.5027, lng:-117.0037 },
-        "Veracruz": { estado:"Veracruz", tipo:"Puerto", lat:19.2000, lng:-96.1333 },
-        "Toluca": { estado: "Estado de México", tipo: "Aeropuerto", lat: 19.33694, lng: -99.56583 },
-        "Cozumel": { estado: "Quintana Roo", tipo: "Puerto", lat: 20.51500, lng: -86.92889 }
+  <section id="mapWrap">
+    <div class="mapTopBar">
+      <div class="pill"><strong>Distribución del personal OPORMEX</strong></div>
+      <div class="pill">Agrupado por OISA</div>
+      <div class="pill" id="visibleCount">OISAs visibles: —</div>
+    </div>
 
-      // 6) Personal real (tu tabla)
-      var personal = [
-        { nombre:"Samuel Marquez Bautista", oisa:"AICM" },
-        { nombre:"Alan Ernesto Orozco Guevara", oisa:"AICM" },
-        { nombre:"Rominna Alexandra Díaz Olvera", oisa:"AIFA" },
-        { nombre:"Leonardo Mundo Estrada", oisa:"Cancún" },
-        { nombre:"Venancio Villalobos Aguilar", oisa:"Cd. Hidalgo" },
-        { nombre:"Ana Karen Flores Duarte", oisa:"Guadalajara" },
+    <div id="diag">Diagnóstico: iniciando…</div>
+    <div id="map"></div>
+  </section>
 
-        { nombre:"Mariana Alcalá Carrillo", oisa:"Manzanillo" },
-        { nombre:"Marjurith Jodany Quiñonez González", oisa:"Manzanillo" },
-        { nombre:"Laura Ruiz Martínez", oisa:"Manzanillo" },
-        { nombre:"Julio César Flores Sánchez", oisa:"Manzanillo" },
-        { nombre:"Mariana Romero Hernández", oisa:"Manzanillo" },
-        { nombre:"Jaquelin Cruz Solis", oisa:"Manzanillo" },
-        { nombre:"Diana Yessica Montero Delgadillo", oisa:"Manzanillo" },
-        { nombre:"Melvin Jonatan Michel Ortíz", oisa:"Manzanillo" },
-        { nombre:"Immer Hernández De la O", oisa:"Manzanillo" },
-        { nombre:"Montserrat Soledad Rodríguez Saavedra", oisa:"Manzanillo" },
-        { nombre:"Sebastián Benjamín Gallardo Castro", oisa:"Manzanillo" },
-        { nombre:"Jesús Petronilo García González", oisa:"Manzanillo" },
-        { nombre:"Carlos Andrés Granados Ventura", oisa:"Manzanillo" },
-        { nombre:"Brenda Karina Valle Rodríguez", oisa:"Manzanillo" },
-        { nombre:"Miguel Ángel Chávez González", oisa:"Manzanillo" },
-        { nombre:"Liliana Carolina Moreno Rodríguez", oisa:"Manzanillo" },
-        { nombre:"Grimaldo Arturo Aguilar Ríos", oisa:"Manzanillo" },
-        { nombre:"Ingrid Virginia Castillo Zacarías", oisa:"Manzanillo" },
-        { nombre:"Ivanna Jocelyn Martínez Reyes", oisa:"Manzanillo" },
-        { nombre:"Mayra Rodríguez Olmos", oisa:"Manzanillo" },
-        { nombre:"Arianna Melisa Gutiérrez Gutiérrez", oisa:"Manzanillo" },
-        { nombre:"Luis Enrique García Merino", oisa:"Manzanillo" },
+</div>
 
-        { nombre:"Adrián Izabal Ceja", oisa:"Mérida" },
-        { nombre:"Mario Alberto Velasco Ramírez", oisa:"Monterrey" },
-        { nombre:"Albacihuatzin Portilla Naranjo", oisa:"Nuevo Laredo" },
-        { nombre:"Susannah Gisell Rangel Guerrero", oisa:"Puerto Vallarta" },
-        { nombre:"Marilú Mass Sánchez", oisa:"Tijuana" },
+<!-- Leaflet JS (jsDelivr) -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        { nombre:"Leady Jazmín Hernández Pozos", oisa:"Veracruz" },
-        { nombre:"José Antúnez Reyes", oisa:"Veracruz" },
-        { nombre:"Sinaí Pérez Colorado", oisa:"Veracruz" },
-        { nombre:"Luis Gerardo Sánchez Sosa", oisa:"Veracruz" },
-        { nombre:"Rufino Domínguez Rincón", oisa:"Veracruz" },
-        { nombre:"Josefina Santiz Sánchez", oisa:"Veracruz" },
-        { nombre:"Ana Lilia Medina Morales", oisa:"Veracruz" },
-        { nombre:"Diego Aurelio Díaz Ramírez", oisa:"Veracruz" },
-        { nombre: "Por definir", oisa: "Toluca" },
-        { nombre: "Por definir", oisa: "Toluca" },
-        { nombre: "Por definir", oisa: "Cozumel" }
+<script>
+(function(){
 
-      ];
+  var diag = document.getElementById("diag");
 
-      // 7) Agrupar por OISA
-      var agrupado = {};
-      for (var i=0; i<personal.length; i++){
-        var o = personal[i].oisa;
-        if (!agrupado[o]) agrupado[o] = [];
-        agrupado[o].push(personal[i].nombre);
-      }
+  if (typeof L === "undefined") {
+    diag.textContent = "Diagnóstico: Leaflet NO cargó (bloqueo de red o extensión).";
+    throw new Error("Leaflet no cargó");
+  } else {
+    diag.textContent = "Diagnóstico: Leaflet cargado. Inicializando mapa…";
+  }
 
-      // 8) Crear marcadores + lista para filtros
-      var markers = []; // { estado, tipo, marker }
-      var bounds = [];
+  var COLORS = {
+    Aeropuerto: "#98D80A",
+    Puerto:     "#0A9FC2",
+    Frontera:   "#FA8F00",
+    Default:    "#cbcbcb"
+  };
+  function colorPorTipo(tipo){ return COLORS[tipo] || COLORS.Default; }
 
-      for (var oisaNombre in agrupado){
-        if (!agrupado.hasOwnProperty(oisaNombre)) continue;
-        var meta = oisas[oisaNombre];
-        if (!meta) continue;
+  var map = L.map("map").setView([23.6345, -102.5528], 5);
 
-        var nombres = agrupado[oisaNombre].slice().sort();
-        var total = nombres.length;
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
 
-        var popupHtml =
-          '<div style="min-width:260px;">' +
-            '<div style="font-size:14px;"><strong>OISA:</strong> ' + oisaNombre + '</div>' +
-            '<div><strong>Estado:</strong> ' + meta.estado + '</div>' +
-            '<div><strong>Tipo:</strong> ' + meta.tipo + '</div>' +
-            '<div><strong>Total de personal:</strong> ' + total + '</div>' +
-            '<hr style="border:none;border-top:1px solid #eee;margin:8px 0;">' +
-            '<div style="max-height:170px; overflow:auto;">' +
-              '<strong>Listado:</strong>' +
-              '<ol style="margin:6px 0 0 18px; padding:0;">' +
-                nombres.map(function(n){ return "<li>"+n+"</li>"; }).join("") +
-              '</ol>' +
-            '</div>' +
-          '</div>';
+  setTimeout(function(){ map.invalidateSize(true); }, 300);
+  window.addEventListener("resize", function(){ map.invalidateSize(true); });
 
-        var m = L.circleMarker([meta.lat, meta.lng], {
-          radius: 8,
-          color: colorPorTipo(meta.tipo),
-          fillColor: colorPorTipo(meta.tipo),
-          fillOpacity: 0.85,
-          weight: 2
-        }).addTo(map);
+  var oisas = {
+    "AICM": { estado:"CDMX", tipo:"Aeropuerto", lat:19.4351, lng:-99.0713 },
+    "AIFA": { estado:"Estado de México", tipo:"Aeropuerto", lat:19.7418, lng:-99.0132 },
+    "Toluca": { estado:"Estado de México", tipo:"Aeropuerto", lat:19.33694, lng:-99.56583 },
 
-        m.bindPopup(popupHtml);
-        m.bindTooltip(oisaNombre + " (" + total + ")", { direction:"top", offset:[0,-6] });
+    "Cancún": { estado:"Quintana Roo", tipo:"Aeropuerto", lat:21.0353, lng:-86.8728 },
+    "Cozumel": { estado:"Quintana Roo", tipo:"Puerto", lat:20.51500, lng:-86.92889 },
 
-        markers.push({ estado: meta.estado, tipo: meta.tipo, marker: m });
-        bounds.push([meta.lat, meta.lng]);
-      }
+    "Guadalajara": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.5218, lng:-103.3111 },
+    "Puerto Vallarta": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.68, lng:-105.25 },
 
-      if (bounds.length) map.fitBounds(bounds, { padding:[20,20] });
+    "Manzanillo": { estado:"Colima", tipo:"Puerto", lat:19.0676, lng:-104.2914 },
+    "Veracruz": { estado:"Veracruz", tipo:"Puerto", lat:19.2, lng:-96.1333 },
 
-      // 9) Leyenda (sin sintaxis “rara”)
-      var legend = L.control({ position:"bottomright" });
-      legend.onAdd = function(){
-        var div = L.DomUtil.create("div", "legend");
-        div.innerHTML =
-          "<strong>Leyenda</strong><br>" +
-          '<span class="dot" style="background:'+COLORS.Aeropuerto+'"></span>Aeropuerto<br>' +
-          '<span class="dot" style="background:'+COLORS.Puerto+'"></span>Puerto<br>' +
-          '<span class="dot" style="background:'+COLORS.Frontera+'"></span>Frontera';
-        return div;
-      };
-      legend.addTo(map);
+    "Nuevo Laredo": { estado:"Tamaulipas", tipo:"Frontera", lat:27.4763, lng:-99.5164 },
+    "Cd. Hidalgo": { estado:"Chiapas", tipo:"Frontera", lat:14.6796, lng:-92.1526 },
+    "Tijuana": { estado:"Baja California", tipo:"Frontera", lat:32.5027, lng:-117.0037 },
 
-      // 10) Filtros
-      var fAeropuerto  = document.getElementById("fAeropuerto");
-      var fPuerto      = document.getElementById("fPuerto");
-      var fFrontera    = document.getElementById("fFrontera");
-      var estadoSelect = document.getElementById("estadoSelect");
-      var visibleCount = document.getElementById("visibleCount");
+    "Monterrey": { estado:"Nuevo León", tipo:"Aeropuerto", lat:25.7749, lng:-100.1139 },
+    "Mérida": { estado:"Yucatán", tipo:"Aeropuerto", lat:20.9370, lng:-89.6577 }
+  };
 
-      // poblar estados
-      var estados = {};
-      for (var k=0; k<markers.length; k++) estados[markers[k].estado] = true;
-      Object.keys(estados).sort().forEach(function(e){
-        var opt = document.createElement("option");
-        opt.value = e;
-        opt.textContent = e;
-        estadoSelect.appendChild(opt);
-      });
+  var personal = [
+    { nombre:"Por definir", oisa:"Toluca" },
+    { nombre:"Por definir", oisa:"Toluca" },
+    { nombre:"Por definir", oisa:"Cozumel" }
+  ];
 
-      function tipoHabilitado(tipo){
-        if (tipo === "Aeropuerto") return fAeropuerto.checked;
-        if (tipo === "Puerto") return fPuerto.checked;
-        if (tipo === "Frontera") return fFrontera.checked;
-        return true;
-      }
+  var agrupado = {};
+  for (var i=0;i<personal.length;i++){
+    var o = personal[i].oisa;
+    if (!agrupado[o]) agrupado[o]=[];
+    agrupado[o].push(personal[i].nombre);
+  }
 
-      function aplicar(){
-        var estado = estadoSelect.value;
-        var visibles = 0;
+  var markers=[];
+  var bounds=[];
 
-        for (var j=0; j<markers.length; j++){
-          var x = markers[j];
-          var okTipo = tipoHabilitado(x.tipo);
-          var okEstado = (estado === "__ALL__") ? true : (x.estado === estado);
-          var show = okTipo && okEstado;
+  for (var k in oisas){
+    if (!oisas.hasOwnProperty(k)) continue;
+    var meta = oisas[k];
+    var lista = agrupado[k] || [];
+    var total = lista.length;
 
-          if (show){
-            if (!map.hasLayer(x.marker)) x.marker.addTo(map);
-            visibles++;
-          } else {
-            if (map.hasLayer(x.marker)) map.removeLayer(x.marker);
-          }
-        }
-        visibleCount.textContent = "OISAs visibles: " + visibles;
-      }
+    var m = L.circleMarker([meta.lat, meta.lng],{
+      radius:8,
+      color: colorPorTipo(meta.tipo),
+      fillColor: colorPorTipo(meta.tipo),
+      fillOpacity:.85,
+      weight:2
+    }).addTo(map);
 
-      fAeropuerto.addEventListener("change", aplicar);
-      fPuerto.addEventListener("change", aplicar);
-      fFrontera.addEventListener("change", aplicar);
-      estadoSelect.addEventListener("change", aplicar);
+    m.bindPopup(
+      "<strong>OISA:</strong> "+k+
+      "<br><strong>Estado:</strong> "+meta.estado+
+      "<br><strong>Tipo:</strong> "+meta.tipo+
+      "<br><strong>Total de personal:</strong> "+total
+    );
 
-      document.getElementById("btnReset").addEventListener("click", function(){
-        fAeropuerto.checked = true;
-        fPuerto.checked = true;
-        fFrontera.checked = true;
-        estadoSelect.value = "__ALL__";
-        aplicar();
-      });
+    markers.push({ estado:meta.estado, tipo:meta.tipo, marker:m });
+    bounds.push([meta.lat, meta.lng]);
+  }
 
-      aplicar();
+  if (bounds.length) map.fitBounds(bounds,{padding:[20,20]});
 
-      diag.innerHTML = "Mapa cargado correctamente.";
-    })();
-  </script>
+  var legend = L.control({position:"bottomright"});
+  legend.onAdd = function(){
+    var div = L.DomUtil.create("div","legend");
+    div.innerHTML =
+      "<strong>Leyenda</strong><br>"+
+      '<span class="dot" style="background:'+COLORS.Aeropuerto+'"></span>Aeropuerto<br>'+
+      '<span class="dot" style="background:'+COLORS.Puerto+'"></span>Puerto<br>'+
+      '<span class="dot" style="background:'+COLORS.Frontera+'"></span>Frontera';
+    return div;
+  };
+  legend.addTo(map);
+
+  var fAeropuerto=document.getElementById("fAeropuerto");
+  var fPuerto=document.getElementById("fPuerto");
+  var fFrontera=document.getElementById("fFrontera");
+  var estadoSelect=document.getElementById("estadoSelect");
+  var visibleCount=document.getElementById("visibleCount");
+
+  var estados={};
+  markers.forEach(function(x){ estados[x.estado]=true; });
+  Object.keys(estados).sort().forEach(function(e){
+    var opt=document.createElement("option");
+    opt.value=e; opt.textContent=e;
+    estadoSelect.appendChild(opt);
+  });
+
+  function tipoOK(t){
+    return (t==="Aeropuerto"&&fAeropuerto.checked)||
+           (t==="Puerto"&&fPuerto.checked)||
+           (t==="Frontera"&&fFrontera.checked);
+  }
+
+  function aplicar(){
+    var est=estadoSelect.value, v=0;
+    markers.forEach(function(x){
+      var ok = tipoOK(x.tipo) && (est==="__ALL__"||est===x.estado);
+      if(ok){ map.addLayer(x.marker); v++; }
+      else{ map.removeLayer(x.marker); }
+    });
+    visibleCount.textContent="OISAs visibles: "+v;
+  }
+
+  [fAeropuerto,fPuerto,fFrontera,estadoSelect].forEach(function(el){
+    el.addEventListener("change",aplicar);
+  });
+  document.getElementById("btnReset").onclick=function(){
+    fAeropuerto.checked=fPuerto.checked=fFrontera.checked=true;
+    estadoSelect.value="__ALL__";
+    aplicar();
+  };
+
+  aplicar();
+  diag.textContent="Diagnóstico: mapa cargado correctamente.";
+  setTimeout(function(){ diag.style.display="none"; }, 2500);
+
+})();
+</script>
+
 </body>
 </html>
-diag.textContent = "Diagnóstico: mapa cargado correctamente.";
-setTimeout(function(){ diag.style.display = "none"; }, 2500);
+
 
