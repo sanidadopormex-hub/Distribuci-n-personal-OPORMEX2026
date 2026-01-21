@@ -3,162 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Distribución del personal OPORMEX</title>
+  <title>Mapa de distribución del personal OPORMEX</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    header { padding: 12px 16px; border-bottom: 1px solid #e5e5e5; display:flex; align-items:center; gap:10px; flex-wrap: wrap;}
-    #map { width: 100%; height: 680px; }
-#sidebar {
-  width: 300px;
-  min-width: 260px;
-  background: #ffffff;
-  border-right: 1px solid #e5e7eb;
-  padding: 14px;
-  overflow-y: auto;
-}
-
-#map {
-  flex: 1;
-  height: 100%;
-}
-
-/* Ajustes del panel de filtros */
-.controls {
-  position: static;
-  background: transparent;
-  padding: 0;
-}
-
-.controls h4 {
-  margin-top: 0;
-}
-
-
-    .pill {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      font-size: 12px;
+    :root{
+      --banner:#2f4154;
+      --border:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --bg:#ffffff;
     }
 
-    .controls {
-      position: absolute;
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, sans-serif; color: var(--text); background: var(--bg); }
+
+    /* Banner estilo “segunda captura” */
+    .banner{
+      background: var(--banner);
+      color:#fff;
+      padding: 26px 16px 18px;
+      text-align:center;
+    }
+    .banner h1{
+      margin:0;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+    .banner p{
+      margin: 10px 0 0;
+      font-size: 14px;
+      opacity: .9;
+    }
+
+    /* Layout principal */
+    .app{
+      display:flex;
+      height: calc(100vh - 98px); /* banner aprox */
+      min-height: 520px;
+    }
+
+    /* Sidebar */
+    #sidebar{
+      width: 330px;
+      min-width: 280px;
+      border-right: 1px solid var(--border);
+      background:#fff;
+      padding: 14px 14px 16px;
+      overflow-y:auto;
+    }
+
+    .side-title{
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .hr{
+      height:1px;
+      background: var(--border);
+      margin: 10px 0 12px;
+      border:0;
+    }
+
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin: 10px 0;
+    }
+    .row label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      font-size: 14px;
+    }
+    .row select, .row button{
+      width:100%;
+      padding: 8px 10px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      background:#fff;
+      font-size: 13px;
+    }
+    .row button{
+      cursor:pointer;
+      font-weight: 600;
+    }
+
+    /* Área del mapa */
+    #mapWrap{
+      flex:1;
+      position:relative;
+      background:#f8fafc;
+    }
+    #map{
+      width:100%;
+      height:100%;
+    }
+
+    /* Mini barra superior dentro del mapa (chips tipo captura 1) */
+    .mapTopBar{
+      position:absolute;
       top: 12px;
       left: 12px;
-      z-index: 999;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 10px rgba(0,0,0,0.08);
-      min-width: 260px;
-      font-size: 13px;
+      z-index: 500;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      pointer-events:none; /* evita bloquear el mapa */
+    }
+    .pill{
+      pointer-events:none;
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      box-shadow: 0 1px 10px rgba(0,0,0,0.06);
     }
 
-    .controls h4 { margin: 0 0 8px 0; font-size: 14px; }
-    .row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin: 6px 0; }
-    .row label { display:flex; align-items:center; gap:8px; cursor:pointer; }
-    .row select, .row button { width: 100%; padding: 6px 8px; border: 1px solid #ddd; border-radius: 8px; background:#fff; }
-    .muted { color: #6b7280; font-size: 12px; }
-
+    /* Leyenda Leaflet */
     .legend {
-      background: #fff;
+      background: rgba(255,255,255,0.95);
       padding: 10px 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
       line-height: 1.4;
       font-size: 13px;
+      box-shadow: 0 1px 10px rgba(0,0,0,0.06);
     }
     .dot {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      margin-right: 8px;
+      display:inline-block;
+      width:10px; height:10px;
+      border-radius:50%;
+      margin-right:8px;
       border: 1px solid #3333;
+      vertical-align: middle;
     }
+
+    /* Nota: en Google Sites, asegúrate de dar suficiente altura al iframe */
   </style>
 </head>
 
 <body>
-  <header>
-    <strong>Mapa de distribución del personal OPORMEX</strong>
-    <span class="pill">Agrupado por OISA</span>
-    <span class="pill" id="visibleCount">—</span>
-  </header>
+  <div class="banner">
+    <h1>Mapa Interactivo de Distribución de Personal</h1>
+    <p>Selecciona filtros para visualizar las ubicaciones por OISA</p>
+  </div>
 
-<div style="display:flex; height: calc(100vh - 60px);">
-  <aside id="sidebar">
-    <!-- aquí van los filtros -->
-  </aside>
-  <div id="map"></div>
-</div>
+  <div class="app">
+    <!-- Sidebar real (NO encima del mapa) -->
+    <aside id="sidebar">
+      <div class="side-title">Filtrar por Tipo de Oficina</div>
 
-  <!-- Panel de filtros -->
-<div class="controls" id="controls" style="position:static; box-shadow:none; border:none;">
-    <h4>Filtros</h4>
+      <div class="row">
+        <label><input type="checkbox" id="fAeropuerto" checked> Aeropuerto</label>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="fPuerto" checked> Puerto</label>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="fFrontera" checked> Frontera</label>
+      </div>
 
-    <div class="row">
-      <label><input type="checkbox" id="fAeropuerto" checked> Aeropuerto</label>
-    </div>
-    <div class="row">
-      <label><input type="checkbox" id="fPuerto" checked> Puerto</label>
-    </div>
-    <div class="row">
-      <label><input type="checkbox" id="fFrontera" checked> Frontera</label>
-    </div>
+      <hr class="hr"/>
 
-    <div class="row" style="margin-top:8px;">
-      <div style="width:100%;">
-        <div class="muted" style="margin-bottom:4px;">Estado</div>
+      <div class="side-title" style="margin-top:0;">Filtrar por Estado</div>
+      <div class="row" style="margin-top:8px;">
         <select id="estadoSelect">
           <option value="__ALL__">Todos</option>
         </select>
       </div>
-    </div>
 
-    <div class="row" style="margin-top:8px;">
-      <button id="btnReset">Restablecer filtros</button>
-    </div>
+      <div class="row" style="margin-top:10px;">
+        <button id="btnReset">Restablecer filtros</button>
+      </div>
 
-    <div class="muted" style="margin-top:6px;">
-      Nota: los filtros aplican por OISA (no por persona).
-    </div>
+      <div class="muted" style="margin-top:12px;">
+        Los filtros aplican por OISA (un marcador por oficina).<br/>
+        En Google Sites, ajusta el alto del embed para ver todo correctamente.
+      </div>
+    </aside>
+
+    <!-- Mapa -->
+    <section id="mapWrap">
+      <div class="mapTopBar">
+        <div class="pill"><strong>Mapa de distribución del personal OPORMEX</strong></div>
+        <div class="pill">Agrupado por OISA</div>
+        <div class="pill" id="visibleCount">OISAs visibles: —</div>
+      </div>
+      <div id="map"></div>
+    </section>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
     // ==========================
-    // 1) COLORES CONFIGURABLES
+    // COLORES (los tuyos)
     // ==========================
-    // Cambia estos hex para tus colores deseados.
     const COLORS = {
-      Aeropuerto: "#91CBF3", // azul
-      Puerto:     "#B1F68E", // verde
-      Frontera:   "#F9BD8B", // rojo
-      Default:    "#cbcbcb"  // gris
+      Aeropuerto: "#91CBF3",
+      Puerto:     "#B1F68E",
+      Frontera:   "#F9BD8B",
+      Default:    "#cbcbcb"
     };
-
-    function colorPorTipo(tipo) {
-      return COLORS[tipo] || COLORS.Default;
-    }
+    function colorPorTipo(tipo){ return COLORS[tipo] || COLORS.Default; }
 
     // ==========================
-    // 2) MAPA BASE
+    // MAPA BASE
     // ==========================
     const map = L.map("map").setView([23.6345, -102.5528], 5);
-
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
     // ==========================
-    // 3) CATÁLOGO OISAs
+    // OISAs + coordenadas
     // ==========================
     const oisas = {
       "AICM": { estado: "CDMX", tipo: "Aeropuerto", lat: 19.43510, lng: -99.07130 },
@@ -176,7 +244,7 @@
     };
 
     // ==========================
-    // 4) PERSONAL (tabla)
+    // PERSONAL (tu tabla)
     // ==========================
     const personal = [
       { nombre: "Samuel Marquez Bautista", oisa: "AICM" },
@@ -226,7 +294,7 @@
     ];
 
     // ==========================
-    // 5) AGRUPAR POR OISA
+    // AGRUPAR por OISA
     // ==========================
     const agrupado = {};
     personal.forEach(p => {
@@ -235,7 +303,7 @@
     });
 
     // ==========================
-    // 6) CREAR MARCADORES (guardarlos para filtrar)
+    // Crear marcadores (guardados para filtros)
     // ==========================
     const markers = []; // { oisaNombre, estado, tipo, marker }
     const bounds = [];
@@ -259,107 +327,3 @@
             <ol style="margin:6px 0 0 18px; padding:0;">
               ${nombres.map(n => `<li>${n}</li>`).join("")}
             </ol>
-          </div>
-        </div>
-      `;
-
-      const m = L.circleMarker([meta.lat, meta.lng], {
-        radius: 8,
-        color: colorPorTipo(meta.tipo),
-        fillColor: colorPorTipo(meta.tipo),
-        fillOpacity: 0.85,
-        weight: 2
-      }).addTo(map);
-
-      m.bindPopup(popupHtml);
-      m.bindTooltip(`${oisaNombre} (${total})`, { direction: "top", offset: [0, -6] });
-
-      markers.push({ oisaNombre, estado: meta.estado, tipo: meta.tipo, marker: m });
-      bounds.push([meta.lat, meta.lng]);
-    });
-
-    if (bounds.length) map.fitBounds(bounds, { padding: [20, 20] });
-
-    // ==========================
-    // 7) LEYENDA (toma colores desde COLORS)
-    // ==========================
-    const legend = L.control({ position: "bottomright" });
-    legend.onAdd = function () {
-      const div = L.DomUtil.create("div", "legend");
-      div.innerHTML = `
-        <div style="margin-bottom:6px;"><strong>Leyenda</strong></div>
-        <div><span class="dot" style="background:${COLORS.Aeropuerto}"></span>Aeropuerto</div>
-        <div><span class="dot" style="background:${COLORS.Puerto}"></span>Puerto</div>
-        <div><span class="dot" style="background:${COLORS.Frontera}"></span>Frontera</div>
-      `;
-      return div;
-    };
-    legend.addTo(map);
-
-    // ==========================
-    // 8) CONTROLES DE FILTRO
-    // ==========================
-    const fAeropuerto = document.getElementById("fAeropuerto");
-    const fPuerto     = document.getElementById("fPuerto");
-    const fFrontera   = document.getElementById("fFrontera");
-    const estadoSelect = document.getElementById("estadoSelect");
-    const visibleCount = document.getElementById("visibleCount");
-    const btnReset = document.getElementById("btnReset");
-
-    // Poblar dropdown de estados
-    const estadosUnicos = Array.from(new Set(markers.map(x => x.estado))).sort((a,b) => a.localeCompare(b));
-    estadosUnicos.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e;
-      opt.textContent = e;
-      estadoSelect.appendChild(opt);
-    });
-
-    function tipoHabilitado(tipo) {
-      if (tipo === "Aeropuerto") return fAeropuerto.checked;
-      if (tipo === "Puerto") return fPuerto.checked;
-      if (tipo === "Frontera") return fFrontera.checked;
-      return true;
-    }
-
-    function aplicarFiltros() {
-      const estado = estadoSelect.value;
-
-      let visibles = 0;
-      markers.forEach(x => {
-        const okTipo = tipoHabilitado(x.tipo);
-        const okEstado = (estado === "__ALL__") ? true : (x.estado === estado);
-
-        const mostrar = okTipo && okEstado;
-
-        if (mostrar) {
-          if (!map.hasLayer(x.marker)) x.marker.addTo(map);
-          visibles += 1;
-        } else {
-          if (map.hasLayer(x.marker)) map.removeLayer(x.marker);
-        }
-      });
-
-      visibleCount.textContent = `OISAs visibles: ${visibles}`;
-    }
-
-    // Eventos
-    [fAeropuerto, fPuerto, fFrontera].forEach(el => el.addEventListener("change", aplicarFiltros));
-    estadoSelect.addEventListener("change", aplicarFiltros);
-
-    btnReset.addEventListener("click", () => {
-      fAeropuerto.checked = true;
-      fPuerto.checked = true;
-      fFrontera.checked = true;
-      estadoSelect.value = "__ALL__";
-      aplicarFiltros();
-    });
-
-    // Aplicar al cargar
-    aplicarFiltros();
-
-    // Evitar que el scroll/drag del mapa se “pelee” con clicks del panel
-    L.DomEvent.disableClickPropagation(document.getElementById("controls"));
-  </script>
-</body>
-</html>
