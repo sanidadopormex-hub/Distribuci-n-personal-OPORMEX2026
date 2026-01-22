@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Distribución de Personal OPORMEX</title>
+  <title>Personal OPORMEX</title>
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
@@ -23,27 +23,29 @@
       background: var(--banner);
       color:#fff;
       text-align:center;
-      padding: 22px 16px 14px;
+      padding: 22px 16px 16px;
     }
-    .banner h1{ margin:0; font-size:26px; font-weight:700; }
-    .banner p{ margin:6px 0 0; font-size:13px; opacity:.9; }
+    .banner h1{ margin:0; font-size:28px; font-weight:700; }
+    .banner p{ margin:8px 0 0; font-size:14px; opacity:.9; }
 
     .app{
       display:flex;
-      height: 840px;
-      min-height: 720px;
+      height: 900px;
+      min-height: 740px;
+      background: var(--bg);
     }
 
     #sidebar{
-      width: 360px;
-      min-width: 320px;
+      width: 380px;
+      min-width: 300px;
       border-right: 1px solid var(--border);
-      padding: 14px 14px 12px;
+      padding: 16px;
       overflow-y:auto;
       background:#fff;
     }
 
-    #sidebar h3{ margin: 10px 0 8px; font-size:15px; }
+    #sidebar h3{ margin: 0 0 10px; font-size:16px; }
+    #sidebar h4{ margin: 12px 0 8px; font-size:14px; }
     hr{ border:none; border-top:1px solid var(--border); margin:12px 0; }
     .muted{ font-size:12px; color: var(--muted); }
 
@@ -52,10 +54,10 @@
       display:flex;
       align-items:center;
       gap:8px;
-      font-size:13px;
+      font-size:14px;
       cursor:pointer;
+      user-select:none;
     }
-
     select, button, input[type="text"]{
       width:100%;
       padding:8px 10px;
@@ -63,22 +65,19 @@
       border-radius:10px;
       background:#fff;
       font-size:13px;
+      outline:none;
     }
-    button{ cursor:pointer; font-weight:700; }
-    .btnRow{
-      display:flex;
-      gap:8px;
-    }
+    button{ cursor:pointer; font-weight:600; }
 
     #mapWrap{
       flex:1;
       position:relative;
-      background:var(--bg);
+      background: var(--bg);
     }
     #map{
       width:100%;
       height:100%;
-      min-height:720px;
+      min-height:740px;
     }
 
     .mapTopBar{
@@ -92,7 +91,7 @@
       pointer-events:none;
     }
     .pill{
-      background:rgba(255,255,255,.96);
+      background:rgba(255,255,255,.95);
       border:1px solid var(--border);
       border-radius:999px;
       padding:6px 10px;
@@ -114,102 +113,98 @@
     }
 
     .legend{
-      background:rgba(255,255,255,.96);
+      background:rgba(255,255,255,.95);
       padding:10px 12px;
       border:1px solid var(--border);
       border-radius:10px;
       font-size:13px;
       box-shadow:0 1px 8px rgba(0,0,0,.08);
+      line-height: 1.35;
     }
     .dot{
       width:10px; height:10px; border-radius:50%;
       display:inline-block; margin-right:8px;
-      border:1px solid #0002;
+      border:1px solid #3333;
       vertical-align:middle;
     }
 
-    /* Lista de personal */
-    #personList{
+    /* OISA list */
+    .oisaBlock{
       border:1px solid var(--border);
       border-radius:12px;
-      padding:8px;
+      padding:10px 10px 8px;
+      margin: 10px 0;
       background:#fff;
-      max-height:360px;
-      overflow:auto;
     }
-    .personItem{
+    .oisaHeader{
       display:flex;
       align-items:flex-start;
-      gap:8px;
-      padding:8px 6px;
-      border-bottom:1px solid #eee;
+      gap:10px;
     }
-    .personItem:last-child{ border-bottom:none; }
-    .personMeta{
+    .oisaTitle{
       flex:1;
-      line-height:1.2;
-    }
-    .personName{
-      font-weight:800;
+      font-weight:700;
       font-size:13px;
+      letter-spacing:.2px;
+      text-transform: uppercase;
     }
-    .personSub{
-      margin-top:3px;
+    .oisaMeta{
+      margin-top:4px;
       font-size:12px;
-      color:#374151;
+      color: var(--muted);
+      line-height:1.25;
     }
-    .personSub2{
-      margin-top:2px;
+    .oisaPeople{
+      margin-top:8px;
+      padding-top:8px;
+      border-top:1px solid var(--border);
       font-size:12px;
-      color:#6b7280;
     }
-    .badgeDot{
-      width:10px;height:10px;border-radius:50%;
-      display:inline-block;border:1px solid #0002; margin-top:3px;
+    .personItem{
+      margin:6px 0;
+      line-height:1.25;
     }
+    .badgeTipo{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:11px;
+      margin-left:6px;
+      background:#fff;
+    }
+    .smallcaps{ font-variant: all-small-caps; letter-spacing:.6px; }
   </style>
 </head>
 
 <body>
 
 <div class="banner">
-  <h1>Distribución de Personal</h1>
-  <p>OPORMEX · 2026 · Filtros por Tipo / Estado / Actividad / Persona</p>
+  <h1>Personal OPORMEX</h1>
+  <p>2026</p>
 </div>
 
 <div class="app">
 
   <aside id="sidebar">
+    <h3>Filtros</h3>
 
-    <h3>Filtrar por Tipo de Oficina</h3>
+    <h4>Filtrar por Tipo de Oficina</h4>
     <div class="row"><label><input type="checkbox" id="fAeropuerto" checked> Aeropuerto</label></div>
     <div class="row"><label><input type="checkbox" id="fPuerto" checked> Puerto</label></div>
     <div class="row"><label><input type="checkbox" id="fFrontera" checked> Frontera</label></div>
 
     <hr>
 
-    <h3>Filtrar por Estado</h3>
+    <h4>Filtrar por Estado</h4>
     <div class="row">
       <select id="estadoSelect">
         <option value="__ALL__">Todos</option>
       </select>
     </div>
 
-    <h3>Filtrar por Actividad</h3>
     <div class="row">
-      <select id="actividadSelect">
-        <option value="__ALL__">Todas</option>
-      </select>
-    </div>
-
-    <div class="row">
-      <label>
-        <input type="checkbox" id="toggleStates">
-        Resaltar estados (requiere GeoJSON)
-      </label>
-      <div class="muted">
-        Para activar esta capa, sube <strong>data/mexico-states.geojson</strong> al repositorio.
-      </div>
+      <label><input type="checkbox" id="shadeStates"> Colorear estados (por # de personas)</label>
     </div>
 
     <div class="row">
@@ -218,20 +213,17 @@
 
     <hr>
 
-    <h3>Personal visible</h3>
+    <h3>OISAs y Personal</h3>
     <div class="row">
-      <input id="qPersona" type="text" placeholder="Buscar por nombre, profesión o actividad…">
+      <input type="text" id="qOisa" placeholder="Buscar OISA / Estado / Nombre…">
     </div>
+    <div class="muted">Marca/desmarca una OISA para mostrar/ocultar su ubicación. El detalle del personal se muestra aquí.</div>
 
-    <div class="row btnRow">
-      <button id="btnAll" type="button">Seleccionar todo</button>
-      <button id="btnNone" type="button">Ninguno</button>
-    </div>
+    <div id="oisaList"></div>
 
-    <div id="personList"><div class="muted">Cargando…</div></div>
-
-    <p class="muted" style="margin-top:10px;">
-      Tip: Al marcar/desmarcar personas, se recalculan totales por OISA y se actualiza el mapa.
+    <hr>
+    <p class="muted">
+      En Google Sites, da suficiente altura al embed (ej. 900–1100 px) para que el mapa tenga espacio.
     </p>
   </aside>
 
@@ -240,7 +232,6 @@
       <div class="pill"><strong>Distribución del personal OPORMEX</strong></div>
       <div class="pill">Agrupado por OISA</div>
       <div class="pill" id="visibleCount">OISAs visibles: —</div>
-      <div class="pill" id="visiblePeople">Personal visible: —</div>
     </div>
 
     <div id="diag">Diagnóstico: iniciando…</div>
@@ -254,479 +245,497 @@
 
 <script>
 (function(){
+  var diag = document.getElementById("diag");
 
-  const diag = document.getElementById("diag");
+  // 0) Verificación Leaflet
   if (typeof L === "undefined") {
-    diag.textContent = "Diagnóstico: Leaflet NO cargó (bloqueo de red o extensión).";
+    diag.textContent = "Diagnóstico: Leaflet NO cargó (bloqueo de red / extensión / CSP).";
     throw new Error("Leaflet no cargó");
   }
-  diag.textContent = "Diagnóstico: Leaflet cargado. Inicializando…";
+  diag.textContent = "Diagnóstico: Leaflet cargado. Inicializando mapa…";
 
-  /* ========= COLORES POR TIPO ========= */
-  const COLORS = {
-    "Aeropuerto": "#98D80A",
-    "Puerto":     "#0A9FC2",
-    "Frontera":   "#FA8F00",
-    "Default":    "#cbcbcb"
+  // 1) Colores por Tipo de oficina (tus códigos)
+  var COLORS = {
+    Aeropuerto: "#98D80A",
+    Puerto:     "#0A9FC2",
+    Frontera:   "#FA8F00",
+    Default:    "#cbcbcb"
   };
   function colorPorTipo(tipo){ return COLORS[tipo] || COLORS.Default; }
 
-  /* ========= MAPA ========= */
-  const map = L.map("map").setView([23.6345, -102.5528], 5);
+  // 2) Mapa base
+  var map = L.map("map", { zoomControl:true }).setView([23.6345, -102.5528], 5);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
-  setTimeout(() => map.invalidateSize(true), 250);
-  window.addEventListener("resize", () => map.invalidateSize(true));
+  // Forzar recalculo tamaño (útil en embeds)
+  setTimeout(function(){ map.invalidateSize(true); }, 350);
+  window.addEventListener("resize", function(){ map.invalidateSize(true); });
 
-  /* ========= OISAs (coords por oficina) =========
-     Nota: Si alguna coordenada requiere ajuste fino, se puede corregir aquí sin tocar personal.
-  */
-  const oisas = {
-    "AICM": { estado:"CDMX", tipo:"Aeropuerto", lat:19.4351, lng:-99.0713 },
-    "AIFA": { estado:"Estado de México", tipo:"Aeropuerto", lat:19.7418, lng:-99.0132 },
-    "Cancún": { estado:"Quintana Roo", tipo:"Aeropuerto", lat:21.0353, lng:-86.8728 },
-    "Cd. Hidalgo": { estado:"Chiapas", tipo:"Frontera", lat:14.6796, lng:-92.1526 },
-    "Guadalajara": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.5218, lng:-103.3111 },
-    "Manzanillo": { estado:"Colima", tipo:"Puerto", lat:19.0676, lng:-104.2914 },
-    "Mérida": { estado:"Yucatán", tipo:"Aeropuerto", lat:20.9370, lng:-89.6577 },
-    "Monterrey": { estado:"Nuevo León", tipo:"Aeropuerto", lat:25.7749, lng:-100.1139 },
-    "Nuevo Laredo": { estado:"Tamaulipas", tipo:"Frontera", lat:27.4763, lng:-99.5164 },
-    "Puerto Vallarta": { estado:"Jalisco", tipo:"Aeropuerto", lat:20.68, lng:-105.25 },
-    "Tijuana": { estado:"Baja California", tipo:"Frontera", lat:32.5027, lng:-117.0037 },
-    "Veracruz": { estado:"Veracruz", tipo:"Puerto", lat:19.2, lng:-96.1333 }
+  // 3) Coordenadas por OISA (un marcador por oficina)
+  var oisas = {
+    "AICM":             { estado:"CDMX",            tipo:"Aeropuerto", lat:19.4351,  lng:-99.0713 },
+    "AIFA":             { estado:"Estado de México",tipo:"Aeropuerto", lat:19.7418,  lng:-99.0132 },
+    "Toluca":           { estado:"Estado de México",tipo:"Aeropuerto", lat:19.33694, lng:-99.56583 },
+
+    "Cancún":           { estado:"Quintana Roo",    tipo:"Aeropuerto", lat:21.0353,  lng:-86.8728 },
+    "Cozumel":          { estado:"Quintana Roo",    tipo:"Puerto",     lat:20.51500, lng:-86.92889 },
+
+    "Guadalajara":      { estado:"Jalisco",         tipo:"Aeropuerto", lat:20.5218,  lng:-103.3111 },
+    "Puerto Vallarta":  { estado:"Jalisco",         tipo:"Aeropuerto", lat:20.6800,  lng:-105.2500 },
+
+    "Manzanillo":       { estado:"Colima",          tipo:"Puerto",     lat:19.0676,  lng:-104.2914 },
+    "Veracruz":         { estado:"Veracruz",        tipo:"Puerto",     lat:19.2000,  lng:-96.1333 },
+
+    "Nuevo Laredo":     { estado:"Tamaulipas",      tipo:"Frontera",   lat:27.4763,  lng:-99.5164 },
+    "Cd. Hidalgo":      { estado:"Chiapas",         tipo:"Frontera",   lat:14.6796,  lng:-92.1526 },
+    "Tijuana":          { estado:"Baja California", tipo:"Frontera",   lat:32.5027,  lng:-117.0037 },
+
+    "Monterrey":        { estado:"Nuevo León",      tipo:"Aeropuerto", lat:25.7749,  lng:-100.1139 },
+    "Mérida":           { estado:"Yucatán",         tipo:"Aeropuerto", lat:20.9370,  lng:-89.6577 }
   };
 
-  /* ========= PERSONAL (tu tabla) ========= */
-  const personal = [
-    { prof:"BIÓL", nombre:"Samuel Marquez Bautista", oisa:"AICM", estado:"CDMX", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",  nombre:"Alan Ernesto Orozco Guevara", oisa:"AICM", estado:"CDMX", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",  nombre:"Rominna Alexandra Díaz Olvera", oisa:"AIFA", estado:"Estado de México", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"BIÓL", nombre:"Leonardo Mundo Estrada", oisa:"Cancún", estado:"Quintana Roo", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",  nombre:"Venancio Villalobos Aguilar", oisa:"Cd. Hidalgo", estado:"Chiapas", tipo:"Frontera", actividad:"Manejador Canino - TEA" },
-    { prof:"BIÓL", nombre:"Ana Karen Flores Duarte", oisa:"Guadalajara", estado:"Jalisco", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+  // 4) Personal (PROF, NOMBRE, OISA, Estado, Tipo, Actividad)
+  var personal = [
+    { prof:"BIÓL",  nombre:"Samuel Marquez Bautista",               oisa:"AICM",            estado:"CDMX",            tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Alan Ernesto Orozco Guevara",           oisa:"AICM",            estado:"CDMX",            tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Rominna Alexandra Díaz Olvera",         oisa:"AIFA",            estado:"Estado de México",tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Leonardo Mundo Estrada",                oisa:"Cancún",          estado:"Quintana Roo",    tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Venancio Villalobos Aguilar",           oisa:"Cd. Hidalgo",     estado:"Chiapas",         tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Ana Karen Flores Duarte",               oisa:"Guadalajara",     estado:"Jalisco",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
 
-    { prof:"ING",  nombre:"Mariana Alcalá Carrillo", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Marjurith Jodany Quiñonez González", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"BIÓL", nombre:"Laura Ruiz Martínez", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Julio César Flores Sánchez", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"BIÓL", nombre:"Mariana Romero Hernández", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Jaquelin Cruz Solis", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"HBIÓL.", nombre:"Diana Yessica Montero Delgadillo", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"QFB",  nombre:"Melvin Jonatan Michel Ortíz", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Immer Hernández De la O", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Montserrat Soledad Rodríguez Saavedra", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Sebastián Benjamín Gallardo Castro", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Jesús Petronilo García González", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Carlos Andrés Granados Ventura", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"BIÓL", nombre:"Brenda Karina Valle Rodríguez", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Miguel Ángel Chávez González", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Liliana Carolina Moreno Rodríguez", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Grimaldo Arturo Aguilar Ríos", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Ingrid Virginia Castillo Zacarías", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Ivanna Jocelyn Martínez Reyes", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Mayra Rodríguez Olmos", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Arianna Melisa Gutiérrez Gutiérrez", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"Por definir" },
-    { prof:"ING",  nombre:"Luis Enrique García Merino", oisa:"Manzanillo", estado:"Colima", tipo:"Puerto", actividad:"Por definir" },
+    { prof:"ING",   nombre:"Mariana Alcalá Carrillo",               oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Marjurith Jodany Quiñonez González",    oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Laura Ruiz Martínez",                   oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Julio César Flores Sánchez",            oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Mariana Romero Hernández",              oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Jaquelin Cruz Solis",                   oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"HBIÓL.",nombre:"Diana Yessica Montero Delgadillo",      oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"QFB",   nombre:"Melvin Jonatan Michel Ortíz",           oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Immer Hernández De la O",               oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Montserrat Soledad Rodríguez Saavedra", oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Sebastián Benjamín Gallardo Castro",    oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Jesús Petronilo García González",       oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Carlos Andrés Granados Ventura",        oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Brenda Karina Valle Rodríguez",         oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Miguel Ángel Chávez González",          oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Liliana Carolina Moreno Rodríguez",     oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Grimaldo Arturo Aguilar Ríos",          oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Ingrid Virginia Castillo Zacarías",     oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Ivanna Jocelyn Martínez Reyes",         oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Mayra Rodríguez Olmos",                 oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Arianna Melisa Gutiérrez Gutiérrez",    oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"" },
+    { prof:"ING",   nombre:"Luis Enrique García Merino",            oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"" },
 
-    { prof:"BIÓL", nombre:"Adrián Izabal Ceja", oisa:"Mérida", estado:"Yucatán", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",  nombre:"Mario Alberto Velasco Ramírez", oisa:"Monterrey", estado:"Nuevo León", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Adrián Izabal Ceja",                    oisa:"Mérida",          estado:"Yucatán",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Mario Alberto Velasco Ramírez",         oisa:"Monterrey",       estado:"Nuevo León",      tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Albacihuatzin Portilla Naranjo",        oisa:"Nuevo Laredo",    estado:"Tamaulipas",      tipo:"Frontera",   actividad:"" },
+    { prof:"MVZ",   nombre:"Susannah Gisell Rangel Guerrero",       oisa:"Puerto Vallarta", estado:"Jalisco",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Marilú Mass Sánchez",                   oisa:"Tijuana",         estado:"Baja California", tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
 
-    { prof:"MVZ",  nombre:"Albacihuatzin Portilla Naranjo", oisa:"Nuevo Laredo", estado:"Tamaulipas", tipo:"Frontera", actividad:"Por definir" },
-    { prof:"MVZ",  nombre:"Susannah Gisell Rangel Guerrero", oisa:"Puerto Vallarta", estado:"Jalisco", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"BIÓL", nombre:"Marilú Mass Sánchez", oisa:"Tijuana", estado:"Baja California", tipo:"Frontera", actividad:"Manejador Canino - TEA" },
+    { prof:"ING",   nombre:"Leady Jazmín Hernández Pozos",          oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"José Antúnez Reyes",                    oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Sinaí Pérez Colorado",                  oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Luis Gerardo Sánchez Sosa",             oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Rufino Domínguez Rincón",               oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Josefina Santiz Sánchez",               oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Ana Lilia Medina Morales",              oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Diego Aurelio Díaz Ramírez",            oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
 
-    { prof:"ING",  nombre:"Leady Jazmín Hernández Pozos", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"BIÓL", nombre:"José Antúnez Reyes", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Sinaí Pérez Colorado", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Luis Gerardo Sánchez Sosa", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Rufino Domínguez Rincón", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Josefina Santiz Sánchez", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"ING",  nombre:"Ana Lilia Medina Morales", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" },
-    { prof:"MVZ",  nombre:"Diego Aurelio Díaz Ramírez", oisa:"Veracruz", estado:"Veracruz", tipo:"Puerto", actividad:"TEA" }
+    // Placeholders opcionales
+    { prof:"",      nombre:"Por definir",                           oisa:"Toluca",          estado:"Estado de México",tipo:"Aeropuerto", actividad:"" },
+    { prof:"",      nombre:"Por definir",                           oisa:"Toluca",          estado:"Estado de México",tipo:"Aeropuerto", actividad:"" },
+    { prof:"",      nombre:"Por definir",                           oisa:"Cozumel",         estado:"Quintana Roo",    tipo:"Puerto",     actividad:"" }
   ];
 
-  /* ========= NORMALIZACIÓN / VALIDACIONES ========= */
-  function esc(s){
-    return String(s)
-      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-      .replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+  // --- Utilidades ---
+  function escapeHtml(s){
+    return String(s || "").replace(/[&<>"']/g, function(m){
+      return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;" })[m];
+    });
   }
-  function norm(s){ return String(s||"").trim().toLowerCase(); }
-
-  // Validar OISAs faltantes en catálogo
-  const missingOisas = [];
-  for (const p of personal){
-    if (!oisas[p.oisa]) missingOisas.push(p.oisa);
-  }
-  if (missingOisas.length){
-    const uniq = [...new Set(missingOisas)].join(", ");
-    diag.textContent = "Advertencia: hay personal con OISA sin coordenadas en catálogo: " + uniq;
+  function hexToRgba(hex, a){
+    var h = String(hex||"").replace("#","").trim();
+    if (h.length===3) h = h.split("").map(function(c){ return c+c; }).join("");
+    if (h.length!==6) return "rgba(0,0,0,"+(a||.1)+")";
+    var r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+    return "rgba("+r+","+g+","+b+","+a+")";
   }
 
-  /* ========= UI REFERENCES ========= */
-  const fAeropuerto = document.getElementById("fAeropuerto");
-  const fPuerto     = document.getElementById("fPuerto");
-  const fFrontera   = document.getElementById("fFrontera");
+  // 5) Agrupar personal por OISA y contar por Estado
+  var peopleByOisa = {};
+  var countByState = {};
+  personal.forEach(function(p){
+    if (!peopleByOisa[p.oisa]) peopleByOisa[p.oisa] = [];
+    peopleByOisa[p.oisa].push(p);
 
-  const estadoSelect    = document.getElementById("estadoSelect");
-  const actividadSelect = document.getElementById("actividadSelect");
-
-  const qPersona   = document.getElementById("qPersona");
-  const personList = document.getElementById("personList");
-
-  const btnReset = document.getElementById("btnReset");
-  const btnAll   = document.getElementById("btnAll");
-  const btnNone  = document.getElementById("btnNone");
-
-  const visibleCountPill  = document.getElementById("visibleCount");
-  const visiblePeoplePill = document.getElementById("visiblePeople");
-
-  const toggleStates = document.getElementById("toggleStates");
-
-  /* ========= POBLAR DROPDOWNS ========= */
-  (function initSelectors(){
-    const estados = new Set();
-    const actividades = new Set();
-
-    for (const p of personal){
-      estados.add(p.estado);
-      actividades.add(p.actividad || "Por definir");
+    var st = p.estado || (oisas[p.oisa] ? oisas[p.oisa].estado : "");
+    if (st){
+      countByState[st] = (countByState[st] || 0) + 1;
     }
+  });
 
-    [...estados].sort((a,b)=>a.localeCompare(b,"es")).forEach(e=>{
-      const opt=document.createElement("option");
-      opt.value=e; opt.textContent=e;
-      estadoSelect.appendChild(opt);
-    });
+  // 6) Crear marcadores por OISA
+  var markerMeta = []; // para filtrar y recomputar
+  var bounds = [];
+  Object.keys(oisas).forEach(function(oisaName){
+    var meta = oisas[oisaName];
+    var lista = peopleByOisa[oisaName] || [];
+    var total = lista.length;
 
-    [...actividades].sort((a,b)=>a.localeCompare(b,"es")).forEach(a=>{
-      const opt=document.createElement("option");
-      opt.value=a; opt.textContent=a;
-      actividadSelect.appendChild(opt);
-    });
-  })();
-
-  /* ========= ESTADO SELECCIÓN DE PERSONAS ========= */
-  // key: index de personal -> boolean
-  const selected = {};
-  personal.forEach((_, idx)=> selected[idx] = true);
-
-  function tipoOK(tipo){
-    return (tipo==="Aeropuerto" && fAeropuerto.checked) ||
-           (tipo==="Puerto"     && fPuerto.checked) ||
-           (tipo==="Frontera"   && fFrontera.checked);
-  }
-
-  function personaPasaFiltros(p){
-    const estOk = (estadoSelect.value==="__ALL__" || p.estado===estadoSelect.value);
-    const actOk = (actividadSelect.value==="__ALL__" || (p.actividad||"Por definir")===actividadSelect.value);
-    const tipoOk = tipoOK(p.tipo);
-    return estOk && actOk && tipoOk;
-  }
-
-  /* ========= LISTADO EN SIDEBAR ========= */
-  function renderPersonList(){
-    const q = norm(qPersona.value);
-    const items = [];
-
-    personal.forEach((p, idx)=>{
-      if (!personaPasaFiltros(p)) return;
-
-      const etiqueta = `${p.prof} ${p.nombre} ${p.actividad} ${p.oisa} ${p.estado} ${p.tipo}`;
-      if (q && norm(etiqueta).indexOf(q)===-1) return;
-
-      const metaOisa = oisas[p.oisa] || { tipo:p.tipo };
-      items.push({ p, idx, tipo: metaOisa.tipo || p.tipo });
-    });
-
-    // Orden por OISA, luego nombre
-    items.sort((a,b)=>{
-      if (a.p.oisa < b.p.oisa) return -1;
-      if (a.p.oisa > b.p.oisa) return 1;
-      return a.p.nombre.localeCompare(b.p.nombre, "es");
-    });
-
-    if (!items.length){
-      personList.innerHTML = "<div class='muted'>Sin resultados con los filtros actuales.</div>";
-      return;
-    }
-
-    let html = "";
-    for (const it of items){
-      const p = it.p;
-      const dot = colorPorTipo(it.tipo);
-      const checked = selected[it.idx] ? "checked" : "";
-
-      html += `
-        <div class="personItem">
-          <input type="checkbox" class="personChk" data-idx="${it.idx}" ${checked} style="margin-top:2px;">
-          <span class="badgeDot" style="background:${dot};"></span>
-          <div class="personMeta">
-            <div class="personName">${esc(p.prof)}. ${esc(p.nombre)}</div>
-            <div class="personSub">${esc(p.actividad || "Por definir")}</div>
-            <div class="personSub2">${esc(p.oisa)} · ${esc(p.estado)} · ${esc(p.tipo)}</div>
-          </div>
-        </div>
-      `;
-    }
-
-    personList.innerHTML = html;
-
-    // listeners de checkboxes
-    personList.querySelectorAll(".personChk").forEach(chk=>{
-      chk.addEventListener("change", (ev)=>{
-        const idx = parseInt(ev.target.getAttribute("data-idx"), 10);
-        selected[idx] = ev.target.checked;
-        aplicar();
-      });
-    });
-  }
-
-  /* ========= MARCADORES POR OISA ========= */
-  const markerByOisa = {}; // oisa -> marker
-  const popupByOisa  = {}; // oisa -> html cache
-
-  // Precrear marcadores para todas las OISAs
-  const bounds = [];
-  for (const oisaKey of Object.keys(oisas)){
-    const meta = oisas[oisaKey];
-    bounds.push([meta.lat, meta.lng]);
-
-    const m = L.circleMarker([meta.lat, meta.lng],{
-      radius:8,
+    var m = L.circleMarker([meta.lat, meta.lng],{
+      radius: 9,
       color: colorPorTipo(meta.tipo),
       fillColor: colorPorTipo(meta.tipo),
-      fillOpacity:.85,
-      weight:2
+      fillOpacity: .85,
+      weight: 2
     }).addTo(map);
 
-    markerByOisa[oisaKey] = m;
-  }
-  if (bounds.length) map.fitBounds(bounds,{padding:[20,20]});
+    // Popup SIN listado (solo datos + total)
+    m.bindPopup(
+      "<div style='min-width:240px;'>"
+      + "<strong>OISA:</strong> " + escapeHtml(oisaName)
+      + "<br><strong>Estado:</strong> " + escapeHtml(meta.estado)
+      + "<br><strong>Tipo:</strong> " + escapeHtml(meta.tipo)
+      + "<br><strong>Total de personal:</strong> " + total
+      + "</div>"
+    );
 
-  /* ========= LEYENDA ========= */
-  const legend = L.control({position:"bottomright"});
+    markerMeta.push({ oisa:oisaName, estado:meta.estado, tipo:meta.tipo, marker:m });
+    bounds.push([meta.lat, meta.lng]);
+  });
+
+  if (bounds.length) map.fitBounds(bounds, {padding:[20,20]});
+
+  // 7) Leyenda
+  var legend = L.control({position:"bottomright"});
   legend.onAdd = function(){
-    const div = L.DomUtil.create("div","legend");
+    var div = L.DomUtil.create("div","legend");
     div.innerHTML =
-      "<strong>Leyenda</strong><br>"+
-      `<span class="dot" style="background:${COLORS.Aeropuerto}"></span>Aeropuerto<br>`+
-      `<span class="dot" style="background:${COLORS.Puerto}"></span>Puerto<br>`+
-      `<span class="dot" style="background:${COLORS.Frontera}"></span>Frontera`;
+      "<strong>Leyenda</strong><br>"
+      + '<span class="dot" style="background:'+COLORS.Aeropuerto+'"></span>Aeropuerto<br>'
+      + '<span class="dot" style="background:'+COLORS.Puerto+'"></span>Puerto<br>'
+      + '<span class="dot" style="background:'+COLORS.Frontera+'"></span>Frontera';
     return div;
   };
   legend.addTo(map);
 
-  /* ========= CAPA OPCIONAL: RESALTAR ESTADOS (GeoJSON) ========= */
-  let statesLayer = null;
-  let statesData = null;
+  // 8) UI filtros
+  var fAeropuerto   = document.getElementById("fAeropuerto");
+  var fPuerto       = document.getElementById("fPuerto");
+  var fFrontera     = document.getElementById("fFrontera");
+  var estadoSelect  = document.getElementById("estadoSelect");
+  var visibleCount  = document.getElementById("visibleCount");
+  var qOisa         = document.getElementById("qOisa");
+  var shadeStates   = document.getElementById("shadeStates");
+  var oisaListDiv   = document.getElementById("oisaList");
 
-  // Mapeo por si tu GeoJSON usa nombres oficiales (ajusta si tu archivo trae otra propiedad)
-  // Recomendación: que el GeoJSON tenga: feature.properties.name
-  const estadoToGeoName = {
-    "CDMX": "Ciudad de México",
-    "Estado de México": "México"
-  };
-  function geoNameForEstado(estado){
-    return estadoToGeoName[estado] || estado;
-  }
+  // llenar dropdown de estados desde OISAs
+  var estados = {};
+  markerMeta.forEach(function(x){ estados[x.estado]=true; });
+  Object.keys(estados).sort(function(a,b){ return a.localeCompare(b,"es"); }).forEach(function(e){
+    var opt = document.createElement("option");
+    opt.value = e; opt.textContent = e;
+    estadoSelect.appendChild(opt);
+  });
 
-  async function ensureStatesLayer(){
-    if (statesLayer) return true;
-    try{
-      const res = await fetch("./data/mexico-states.geojson", { cache:"no-store" });
-      if (!res.ok) throw new Error("No se encontró data/mexico-states.geojson");
-      statesData = await res.json();
+  // 9) Sidebar: listado por OISA (checkbox + personal)
+  var oisaEnabled = {};
+  Object.keys(oisas).forEach(function(o){ oisaEnabled[o] = true; });
 
-      statesLayer = L.geoJSON(statesData, {
-        style: function(feature){
-          return {
-            color: "#111827",
-            weight: 1,
-            fillColor: "#111827",
-            fillOpacity: 0.0
-          };
+  function buildSidebar(){
+    oisaListDiv.innerHTML = "";
+    var query = (qOisa.value || "").trim().toLowerCase();
+
+    // orden: Estado y luego OISA
+    var oisaNames = Object.keys(oisas).sort(function(a,b){
+      var ea = (oisas[a].estado||"").localeCompare(oisas[b].estado||"", "es");
+      if (ea !== 0) return ea;
+      return a.localeCompare(b, "es");
+    });
+
+    oisaNames.forEach(function(oisaName){
+      var meta = oisas[oisaName];
+      var ppl = peopleByOisa[oisaName] || [];
+      var total = ppl.length;
+
+      // filtro búsqueda
+      var hayMatch = true;
+      if (query){
+        var base = (oisaName + " " + meta.estado + " " + meta.tipo).toLowerCase();
+        hayMatch = base.indexOf(query) >= 0;
+        if (!hayMatch){
+          hayMatch = ppl.some(function(p){
+            return (p.nombre || "").toLowerCase().indexOf(query) >= 0
+              || (p.prof || "").toLowerCase().indexOf(query) >= 0
+              || (p.actividad || "").toLowerCase().indexOf(query) >= 0;
+          });
+        }
+      }
+      if (!hayMatch) return;
+
+      var block = document.createElement("div");
+      block.className = "oisaBlock";
+
+      var head = document.createElement("div");
+      head.className = "oisaHeader";
+
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !!oisaEnabled[oisaName];
+      cb.addEventListener("change", function(){
+        oisaEnabled[oisaName] = cb.checked;
+        aplicar();
+      });
+
+      var info = document.createElement("div");
+      info.style.flex = "1";
+
+      var title = document.createElement("div");
+      title.className = "oisaTitle";
+      title.textContent = oisaName;
+
+      var tipoBadge = document.createElement("span");
+      tipoBadge.className = "badgeTipo";
+      tipoBadge.textContent = meta.tipo;
+      tipoBadge.style.background = hexToRgba(colorPorTipo(meta.tipo), 0.12);
+      title.appendChild(tipoBadge);
+
+      var metaDiv = document.createElement("div");
+      metaDiv.className = "oisaMeta";
+      metaDiv.innerHTML = "Estado: <strong>" + escapeHtml(meta.estado) + "</strong><br>"
+                        + "Personal: <strong>" + total + "</strong>";
+
+      info.appendChild(title);
+      info.appendChild(metaDiv);
+
+      head.appendChild(cb);
+      head.appendChild(info);
+
+      // lista de personal (solo en sidebar)
+      var pplDiv = document.createElement("div");
+      pplDiv.className = "oisaPeople";
+
+      if (ppl.length){
+        ppl.forEach(function(p){
+          var item = document.createElement("div");
+          item.className = "personItem";
+
+          var prof = (p.prof && p.prof.trim()) ? ("<strong>" + escapeHtml(p.prof) + "</strong> ") : "";
+          var act  = (p.actividad && p.actividad.trim()) ? ("<div class='muted' style='margin-top:2px;'>" + escapeHtml(p.actividad) + "</div>") : "";
+          item.innerHTML =
+            prof + escapeHtml(p.nombre)
+            + act;
+
+          pplDiv.appendChild(item);
+        });
+      } else {
+        var empty = document.createElement("div");
+        empty.className = "muted";
+        empty.textContent = "Sin personal asignado en la lista.";
+        pplDiv.appendChild(empty);
+      }
+
+      // click en bloque => centrar mapa
+      block.addEventListener("click", function(ev){
+        // evitar que el click en checkbox dispare también
+        if (ev.target && ev.target.tagName && ev.target.tagName.toLowerCase() === "input") return;
+        var mk = markerMeta.find(function(x){ return x.oisa===oisaName; });
+        if (mk){
+          map.setView(mk.marker.getLatLng(), 7, {animate:true});
+          mk.marker.openPopup();
         }
       });
 
-      return true;
-    }catch(err){
-      diag.textContent = "No se pudo cargar la capa de estados. Sube data/mexico-states.geojson al repositorio.";
-      return false;
-    }
-  }
-
-  function updateStatesHighlight(visibleOisasSet, selectedEstado){
-    if (!statesLayer || !statesData) return;
-
-    const targetGeoName = selectedEstado && selectedEstado !== "__ALL__"
-      ? geoNameForEstado(selectedEstado)
-      : null;
-
-    statesLayer.setStyle(function(feature){
-      const name = feature.properties && (feature.properties.name || feature.properties.NOMGEO || feature.properties.estado || feature.properties.NAME_1);
-      const geoName = String(name || "").trim();
-
-      let shouldHighlight = false;
-
-      if (targetGeoName){
-        shouldHighlight = (geoName.toLowerCase() === String(targetGeoName).toLowerCase());
-      } else {
-        // resaltar todos los estados con OISA visible
-        for (const oisaKey of Object.keys(visibleOisasSet)){
-          const e = (oisas[oisaKey] && oisas[oisaKey].estado) ? oisas[oisaKey].estado : "";
-          const gn = geoNameForEstado(e);
-          if (geoName && gn && geoName.toLowerCase() === String(gn).toLowerCase()){
-            shouldHighlight = true;
-            break;
-          }
-        }
-      }
-
-      return {
-        color: "#111827",
-        weight: 1,
-        fillColor: "#111827",
-        fillOpacity: shouldHighlight ? 0.12 : 0.0
-      };
+      block.appendChild(head);
+      block.appendChild(pplDiv);
+      oisaListDiv.appendChild(block);
     });
   }
 
-  /* ========= APLICAR FILTROS: recalcular visibles y popups ========= */
+  // 10) Filtros: aplicación sobre marcadores
+  function tipoOK(t){
+    return (t==="Aeropuerto"&&fAeropuerto.checked) ||
+           (t==="Puerto"&&fPuerto.checked) ||
+           (t==="Frontera"&&fFrontera.checked);
+  }
+
   function aplicar(){
-    // 1) Filtrar personas por filtros y selección individual
-    const visibles = [];
-    for (let i=0;i<personal.length;i++){
-      if (!selected[i]) continue;
-      const p = personal[i];
-      if (!personaPasaFiltros(p)) continue;
-      visibles.push(p);
-    }
+    var est = estadoSelect.value;
+    var visibles = 0;
 
-    // 2) Agrupar personas visibles por OISA
-    const group = {}; // oisa -> array personas
-    visibles.forEach(p=>{
-      if (!group[p.oisa]) group[p.oisa]=[];
-      group[p.oisa].push(p);
+    markerMeta.forEach(function(x){
+      var ok = true;
+      ok = ok && tipoOK(x.tipo);
+      ok = ok && (est==="__ALL__" || est===x.estado);
+      ok = ok && (oisaEnabled[x.oisa] !== false);
+
+      if (ok){
+        if (!map.hasLayer(x.marker)) map.addLayer(x.marker);
+        visibles++;
+      } else {
+        if (map.hasLayer(x.marker)) map.removeLayer(x.marker);
+      }
     });
 
-    // 3) Actualizar marcadores (visible si total>0 y tipo/estado consistentes)
-    let oisasVisiblesCount = 0;
-    const oisasVisiblesSet = {};
-
-    for (const oisaKey of Object.keys(oisas)){
-      const meta = oisas[oisaKey];
-      const lista = group[oisaKey] || [];
-      const total = lista.length;
-
-      const marker = markerByOisa[oisaKey];
-      const okTipo = tipoOK(meta.tipo);
-      const okEstado = (estadoSelect.value==="__ALL__" || meta.estado===estadoSelect.value);
-
-      const show = (total > 0) && okTipo && okEstado;
-
-      if (show){
-        map.addLayer(marker);
-        oisasVisiblesCount++;
-        oisasVisiblesSet[oisaKey] = true;
-      } else {
-        map.removeLayer(marker);
-      }
-
-      // popup + tooltip dinámicos
-      const nombres = lista
-        .slice()
-        .sort((a,b)=>a.nombre.localeCompare(b.nombre,"es"))
-        .map(p=>`${esc(p.prof)}. ${esc(p.nombre)} — ${esc(p.actividad||"Por definir")}`);
-
-      const listaHtml = (nombres.length)
-        ? "<ol style='margin:6px 0 0 18px; padding:0; max-height:180px; overflow:auto;'>" +
-            nombres.map(n=>"<li>"+n+"</li>").join("") +
-          "</ol>"
-        : "<div style='margin-top:6px; color:#6b7280; font-size:12px;'>Sin personal con filtros actuales</div>";
-
-      const popupHtml =
-        "<div style='min-width:300px;'>" +
-          "<div style='font-size:14px; margin-bottom:4px;'><strong>OISA:</strong> "+esc(oisaKey)+"</div>" +
-          "<div><strong>Estado:</strong> "+esc(meta.estado)+"</div>" +
-          "<div><strong>Tipo:</strong> "+esc(meta.tipo)+"</div>" +
-          "<div><strong>Total de personal (visible):</strong> "+total+"</div>" +
-          "<hr style='border:none;border-top:1px solid #eee;margin:8px 0;'>" +
-          "<div><strong>Listado:</strong></div>" +
-          listaHtml +
-        "</div>";
-
-      marker.bindPopup(popupHtml);
-      marker.bindTooltip(`${oisaKey} (${total})`, { direction:"top", offset:[0,-6] });
-    }
-
-    // 4) Pills
-    visibleCountPill.textContent = "OISAs visibles: " + oisasVisiblesCount;
-    visiblePeoplePill.textContent = "Personal visible: " + visibles.length;
-
-    // 5) Sidebar: lista de personal (ya filtrada por filtros generales, pero respeta selección)
-    renderPersonList();
-
-    // 6) Capa de estados (opcional)
-    if (toggleStates.checked && statesLayer){
-      updateStatesHighlight(oisasVisiblesSet, estadoSelect.value);
-    }
+    visibleCount.textContent = "OISAs visibles: " + visibles;
+    updateStatesLayer(); // si está activado
   }
 
-  /* ========= EVENTOS UI ========= */
-  [fAeropuerto,fPuerto,fFrontera,estadoSelect,actividadSelect].forEach(el=>{
-    el.addEventListener("change", aplicar);
-  });
-  qPersona.addEventListener("input", renderPersonList);
+  // 11) Estados coloreados (opcional)
+  var statesLayer = null;
 
-  btnReset.addEventListener("click", ()=>{
-    fAeropuerto.checked = true;
-    fPuerto.checked = true;
-    fFrontera.checked = true;
-    estadoSelect.value = "__ALL__";
-    actividadSelect.value = "__ALL__";
-    qPersona.value = "";
-    // re-seleccionar todo
-    personal.forEach((_, idx)=> selected[idx]=true);
-    aplicar();
-  });
+  // Nota: este URL carga el GeoJSON de estados (colección). Si prefieres otro repositorio,
+  // cambia el enlace por uno "raw" directo.
+  var STATES_GEOJSON_URL =
+    "https://raw.githubusercontent.com/open-mexico/mexico-geojson/master/states.geojson";
 
-  btnAll.addEventListener("click", ()=>{
-    // seleccionar todos los que pasan filtros generales (para que tenga sentido operativo)
-    for (let i=0;i<personal.length;i++){
-      selected[i] = personaPasaFiltros(personal[i]);
-    }
-    aplicar();
-  });
+  function getMaxCount(){
+    var max = 0;
+    Object.keys(countByState).forEach(function(k){ if (countByState[k] > max) max = countByState[k]; });
+    return Math.max(max, 1);
+  }
 
-  btnNone.addEventListener("click", ()=>{
-    for (let i=0;i<personal.length;i++) selected[i]=false;
-    aplicar();
-  });
+  function shadeForCount(n){
+    // escala simple 0..1 (más oscuro = más personas)
+    var max = getMaxCount();
+    var t = Math.min(n / max, 1);
+    // usamos el color "Default" con alpha variable (no fija color externo)
+    var alpha = 0.05 + (0.22 * t); // 0.05..0.27
+    return hexToRgba("#111827", alpha); // negro-azulado muy suave
+  }
 
-  toggleStates.addEventListener("change", async ()=>{
-    if (toggleStates.checked){
-      const ok = await ensureStatesLayer();
-      if (ok && statesLayer){
-        statesLayer.addTo(map);
-      } else {
-        toggleStates.checked = false;
+  function normalizeStateName(name){
+    return String(name||"")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g," ")
+      .replace(/á/g,"a").replace(/é/g,"e").replace(/í/g,"i").replace(/ó/g,"o").replace(/ú/g,"u")
+      .replace(/ñ/g,"n");
+  }
+
+  // Mapeo de nombres alternos (por si el GeoJSON trae variantes)
+  var STATE_ALIASES = {
+    "estado de mexico":"estado de mexico",
+    "cdmx":"ciudad de mexico",
+    "ciudad de mexico":"ciudad de mexico",
+    "nuevo leon":"nuevo leon",
+    "baja california":"baja california",
+    "quintana roo":"quintana roo"
+  };
+
+  function countForGeoState(geoName){
+    var nGeo = normalizeStateName(geoName);
+    if (STATE_ALIASES[nGeo]) nGeo = STATE_ALIASES[nGeo];
+
+    // buscar coincidencia contra nuestros estados
+    var found = 0;
+    Object.keys(countByState).forEach(function(k){
+      var nk = normalizeStateName(k);
+      if (STATE_ALIASES[nk]) nk = STATE_ALIASES[nk];
+      if (nk === nGeo) found = countByState[k];
+    });
+    return found;
+  }
+
+  function updateStatesLayer(){
+    if (!shadeStates.checked){
+      if (statesLayer){
+        map.removeLayer(statesLayer);
+        statesLayer = null;
       }
-    } else {
-      if (statesLayer) map.removeLayer(statesLayer);
+      return;
     }
+
+    // si ya existe, no recargar; sólo ajustar estilo
+    if (statesLayer){
+      statesLayer.setStyle(function(feat){
+        var nm = (feat.properties && (feat.properties.name || feat.properties.NOMBRE || feat.properties.state_name)) || "";
+        var c = countForGeoState(nm);
+        return {
+          color: "#111827",
+          weight: 1,
+          opacity: 0.25,
+          fillColor: shadeForCount(c),
+          fillOpacity: 1
+        };
+      });
+      return;
+    }
+
+    diag.style.display = "block";
+    diag.textContent = "Diagnóstico: cargando GeoJSON de estados…";
+
+    fetch(STATES_GEOJSON_URL)
+      .then(function(r){
+        if (!r.ok) throw new Error("No se pudo descargar GeoJSON de estados ("+r.status+")");
+        return r.json();
+      })
+      .then(function(geo){
+        statesLayer = L.geoJSON(geo, {
+          style: function(feat){
+            var nm = (feat.properties && (feat.properties.name || feat.properties.NOMBRE || feat.properties.state_name)) || "";
+            var c = countForGeoState(nm);
+            return {
+              color: "#111827",
+              weight: 1,
+              opacity: 0.25,
+              fillColor: shadeForCount(c),
+              fillOpacity: 1
+            };
+          },
+          onEachFeature: function(feat, layer){
+            var nm = (feat.properties && (feat.properties.name || feat.properties.NOMBRE || feat.properties.state_name)) || "Estado";
+            var c = countForGeoState(nm);
+            layer.bindTooltip(escapeHtml(nm) + " · Personal: " + c, {sticky:true});
+          }
+        }).addTo(map);
+
+        diag.textContent = "Diagnóstico: estados cargados.";
+        setTimeout(function(){ diag.style.display="none"; }, 1600);
+      })
+      .catch(function(err){
+        diag.textContent = "Diagnóstico: no se pudo cargar GeoJSON de estados. " + err.message;
+      });
+  }
+
+  // 12) Eventos UI
+  [fAeropuerto,fPuerto,fFrontera,estadoSelect].forEach(function(el){
+    el.addEventListener("change", function(){
+      aplicar();
+      buildSidebar();
+    });
+  });
+
+  shadeStates.addEventListener("change", function(){
+    updateStatesLayer();
+  });
+
+  document.getElementById("btnReset").addEventListener("click", function(){
+    fAeropuerto.checked = true;
+    fPuerto.checked     = true;
+    fFrontera.checked   = true;
+    estadoSelect.value  = "__ALL__";
+    Object.keys(oisaEnabled).forEach(function(k){ oisaEnabled[k]=true; });
+    qOisa.value = "";
+    shadeStates.checked = false;
+    updateStatesLayer();
+    buildSidebar();
     aplicar();
   });
 
-  // Arranque
-  renderPersonList();
+  qOisa.addEventListener("input", function(){
+    buildSidebar();
+  });
+
+  // 13) Inicializar
+  buildSidebar();
   aplicar();
 
   diag.textContent = "Diagnóstico: mapa cargado correctamente.";
-  setTimeout(()=>{ diag.style.display="none"; }, 2200);
+  setTimeout(function(){ diag.style.display="none"; }, 2200);
 
 })();
 </script>
