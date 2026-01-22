@@ -701,19 +701,18 @@
   var stNameKey = normalize(stNameRaw);
   var n = countByState[stNameKey] || 0;
 
-  // Solo mostrar tooltip si hay personal en el estado
-  if (n > 0) {
-    layer.bindTooltip(
-      stNameRaw + ": " + n,
-      { sticky:true, direction:"auto" }
-      if (n === 0) {
-  layer.off();              // quita eventos
-  layer.options.interactive = false;
-}
-    );
+  // Si no hay personal, no mostramos tooltip y evitamos interacción
+  if (n === 0) {
+    layer.options.interactive = false;
+    return;
   }
-}
 
+  // Tooltip solo si hay personal
+  layer.bindTooltip(
+    stNameRaw + ": " + n,
+    { sticky:true, direction:"auto" }
+  );
+}
         });
 
         if (shadeStates.checked){
