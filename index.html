@@ -697,15 +697,23 @@
         statesLayer = L.geoJSON(geo, {
           style: styleState,
           onEachFeature: function(feature, layer){
-            var stNameRaw = getStateNameFromFeature(feature.properties);
-            var stNameKey = normalize(stNameRaw);
-            var n = countByState[stNameKey] || 0;
+  var stNameRaw = getStateNameFromFeature(feature.properties);
+  var stNameKey = normalize(stNameRaw);
+  var n = countByState[stNameKey] || 0;
 
-            layer.bindTooltip(
-              (stNameRaw || "Estado") + ": " + n,
-              { sticky:true, direction:"auto" }
-            );
-          }
+  // Solo mostrar tooltip si hay personal en el estado
+  if (n > 0) {
+    layer.bindTooltip(
+      stNameRaw + ": " + n,
+      { sticky:true, direction:"auto" }
+      if (n === 0) {
+  layer.off();              // quita eventos
+  layer.options.interactive = false;
+}
+    );
+  }
+}
+
         });
 
         if (shadeStates.checked){
