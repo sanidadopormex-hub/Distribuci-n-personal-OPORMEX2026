@@ -30,7 +30,7 @@
 
     .app{
       display:flex;
-      height: 860px;         /* ajusta esto si quieres más alto */
+      height: 860px;         /* desktop */
       min-height: 720px;
     }
 
@@ -131,10 +131,10 @@
       vertical-align:middle;
     }
 
-    /* SUBIR CONTROLES/LEYENDAS (evita que queden “hasta abajo”) */
+    /* SUBIR CONTROLES/LEYENDAS */
     .leaflet-bottom.leaflet-right { margin-bottom: 22px; margin-right: 12px; }
     .leaflet-bottom.leaflet-left  { margin-bottom: 22px; margin-left: 12px; }
-    .leaflet-control { margin: 12px !important; } /* control spacing general */
+    .leaflet-control { margin: 12px !important; }
 
     /* Sección OISAs */
     .sectionTitle{
@@ -194,6 +194,53 @@
     .person strong{ font-size:12px; }
     .person .mini{ color:var(--muted); font-size:11px; }
 
+    /* ===============================
+       MODO MÓVIL / RESPONSIVE
+       =============================== */
+    @media (max-width: 900px){
+
+      .app{
+        flex-direction: column;
+        height: auto;
+        min-height: auto;
+      }
+
+      #sidebar{
+        width: 100%;
+        min-width: 100%;
+        max-height: 55vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      #mapWrap{
+        width: 100%;
+        height: 65vh;
+        min-height: 420px;
+      }
+
+      #map{
+        min-height: 420px;
+      }
+
+      /* Ajustar pills superiores */
+      .mapTopBar{
+        left: 8px;
+        right: 8px;
+        gap: 6px;
+      }
+
+      .pill{
+        font-size: 11px;
+        padding: 5px 8px;
+      }
+
+      /* Leyendas más compactas */
+      .legend{
+        font-size: 12px;
+        padding: 8px 10px;
+      }
+    }
   </style>
 </head>
 
@@ -271,13 +318,12 @@
 (function(){
   var diag = document.getElementById("diag");
 
-  // Si Leaflet no carga (bloqueo/extensión), se verá aquí:
   if (typeof L === "undefined") {
     diag.textContent = "Diagnóstico: Leaflet NO cargó (bloqueo de red o extensión).";
     throw new Error("Leaflet no cargó");
   }
 
-  // ====== COLORES POR TIPO (tus valores actuales) ======
+  // ====== COLORES POR TIPO ======
   var COLORS = {
     Aeropuerto: "#98D80A",
     Puerto:     "#0A9FC2",
@@ -286,9 +332,7 @@
   };
   function colorPorTipo(tipo){ return COLORS[tipo] || COLORS.Default; }
 
-  // ====== GeoJSON de estados (RAW, para evitar 404) ======
-  // Nota: Usamos un GeoJSON consolidado de estados de México (FeatureCollection).
-  // Si en el futuro prefieres usar uno propio, sube el archivo al repo y cambia a: "./states.geojson"
+  // ====== GeoJSON de estados ======
   var STATES_GEOJSON_URL =
     "https://raw.githubusercontent.com/strotgen/mexico-leaflet/master/states.geojson";
 
@@ -315,61 +359,61 @@
     "Mérida": { estado:"Yucatán", tipo:"Aeropuerto", lat:20.9370, lng:-89.6577 }
   };
 
-  // ====== DATA: Personal (PROF + nombre + actividad) ======
+  // ====== DATA: Personal ======
   var personal = [
-    { prof:"BIÓL",  nombre:"Samuel Marquez Bautista",          oisa:"AICM",            estado:"CDMX",            tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",   nombre:"Alan Ernesto Orozco Guevara",      oisa:"AICM",            estado:"CDMX",            tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Samuel Marquez Bautista",           oisa:"AICM",            estado:"CDMX",             tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Alan Ernesto Orozco Guevara",       oisa:"AICM",            estado:"CDMX",             tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
 
-    { prof:"MVZ",   nombre:"Rominna Alexandra Díaz Olvera",    oisa:"AIFA",            estado:"Estado de México",tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"",      nombre:"Por definir",                      oisa:"Toluca",          estado:"Estado de México",tipo:"Aeropuerto", actividad:"Por definir" },
-    { prof:"",      nombre:"Por definir",                      oisa:"Toluca",          estado:"Estado de México",tipo:"Aeropuerto", actividad:"Por definir" },
+    { prof:"MVZ",   nombre:"Rominna Alexandra Díaz Olvera",     oisa:"AIFA",            estado:"Estado de México", tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"",      nombre:"Por definir",                        oisa:"Toluca",          estado:"Estado de México", tipo:"Aeropuerto", actividad:"Por definir" },
+    { prof:"",      nombre:"Por definir",                        oisa:"Toluca",          estado:"Estado de México", tipo:"Aeropuerto", actividad:"Por definir" },
 
-    { prof:"BIÓL",  nombre:"Leonardo Mundo Estrada",           oisa:"Cancún",          estado:"Quintana Roo",    tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"",      nombre:"Por definir",                      oisa:"Cozumel",         estado:"Quintana Roo",    tipo:"Puerto",     actividad:"Por definir" },
+    { prof:"BIÓL",  nombre:"Leonardo Mundo Estrada",            oisa:"Cancún",          estado:"Quintana Roo",     tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"",      nombre:"Por definir",                        oisa:"Cozumel",         estado:"Quintana Roo",     tipo:"Puerto",     actividad:"Por definir" },
 
-    { prof:"MVZ",   nombre:"Venancio Villalobos Aguilar",      oisa:"Cd. Hidalgo",     estado:"Chiapas",         tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Venancio Villalobos Aguilar",       oisa:"Cd. Hidalgo",     estado:"Chiapas",          tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
 
-    { prof:"BIÓL",  nombre:"Ana Karen Flores Duarte",          oisa:"Guadalajara",     estado:"Jalisco",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Ana Karen Flores Duarte",           oisa:"Guadalajara",     estado:"Jalisco",          tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
 
-    { prof:"ING",   nombre:"Mariana Alcalá Carrillo",          oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Marjurith Jodany Quiñonez González",oisa:"Manzanillo",     estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"BIÓL",  nombre:"Laura Ruiz Martínez",              oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Julio César Flores Sánchez",       oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"BIÓL",  nombre:"Mariana Romero Hernández",         oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Jaquelin Cruz Solis",              oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"HBIÓL.",nombre:"Diana Yessica Montero Delgadillo", oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"QFB",   nombre:"Melvin Jonatan Michel Ortíz",      oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Immer Hernández De la O",          oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Montserrat Soledad Rodríguez Saavedra",oisa:"Manzanillo", estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Sebastián Benjamín Gallardo Castro",oisa:"Manzanillo",     estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Jesús Petronilo García González",  oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Carlos Andrés Granados Ventura",   oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"BIÓL",  nombre:"Brenda Karina Valle Rodríguez",    oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Miguel Ángel Chávez González",     oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Liliana Carolina Moreno Rodríguez",oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Grimaldo Arturo Aguilar Ríos",     oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Ingrid Virginia Castillo Zacarías",oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Ivanna Jocelyn Martínez Reyes",    oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Mayra Rodríguez Olmos",            oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Arianna Melisa Gutiérrez Gutiérrez",oisa:"Manzanillo",     estado:"Colima",          tipo:"Puerto",     actividad:"En capacitación para TEA" },
-    { prof:"ING",   nombre:"Luis Enrique García Merino",       oisa:"Manzanillo",      estado:"Colima",          tipo:"Puerto",     actividad:"En capacitación para TEA" },
+    { prof:"ING",   nombre:"Mariana Alcalá Carrillo",           oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Marjurith Jodany Quiñonez González",oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Laura Ruiz Martínez",               oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Julio César Flores Sánchez",        oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Mariana Romero Hernández",          oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Jaquelin Cruz Solis",               oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"HBIÓL.",nombre:"Diana Yessica Montero Delgadillo",  oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"QFB",   nombre:"Melvin Jonatan Michel Ortíz",       oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Immer Hernández De la O",           oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Montserrat Soledad Rodríguez Saavedra",oisa:"Manzanillo",   estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Sebastián Benjamín Gallardo Castro",oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Jesús Petronilo García González",   oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Carlos Andrés Granados Ventura",    oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"Brenda Karina Valle Rodríguez",     oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Miguel Ángel Chávez González",      oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Liliana Carolina Moreno Rodríguez", oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Grimaldo Arturo Aguilar Ríos",      oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Ingrid Virginia Castillo Zacarías", oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Ivanna Jocelyn Martínez Reyes",     oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Mayra Rodríguez Olmos",             oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Arianna Melisa Gutiérrez Gutiérrez",oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"En capacitación para TEA" },
+    { prof:"ING",   nombre:"Luis Enrique García Merino",        oisa:"Manzanillo",      estado:"Colima",           tipo:"Puerto",     actividad:"En capacitación para TEA" },
 
-    { prof:"BIÓL",  nombre:"Adrián Izabal Ceja",               oisa:"Mérida",          estado:"Yucatán",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
-    { prof:"MVZ",   nombre:"Mario Alberto Velasco Ramírez",    oisa:"Monterrey",       estado:"Nuevo León",      tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Adrián Izabal Ceja",                oisa:"Mérida",          estado:"Yucatán",          tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Mario Alberto Velasco Ramírez",     oisa:"Monterrey",       estado:"Nuevo León",       tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
 
-    { prof:"MVZ",   nombre:"Albacihuatzin Portilla Naranjo",   oisa:"Nuevo Laredo",    estado:"Tamaulipas",      tipo:"Frontera",   actividad:"En capacitación para TEA" },
-    { prof:"MVZ",   nombre:"Susannah Gisell Rangel Guerrero",  oisa:"Puerto Vallarta", estado:"Jalisco",         tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
+    { prof:"MVZ",   nombre:"Albacihuatzin Portilla Naranjo",    oisa:"Nuevo Laredo",    estado:"Tamaulipas",       tipo:"Frontera",   actividad:"En capacitación para TEA" },
+    { prof:"MVZ",   nombre:"Susannah Gisell Rangel Guerrero",   oisa:"Puerto Vallarta", estado:"Jalisco",          tipo:"Aeropuerto", actividad:"Manejador Canino - TEA" },
 
-    { prof:"BIÓL",  nombre:"Marilú Mass Sánchez",              oisa:"Tijuana",         estado:"Baja California", tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
+    { prof:"BIÓL",  nombre:"Marilú Mass Sánchez",               oisa:"Tijuana",         estado:"Baja California",  tipo:"Frontera",   actividad:"Manejador Canino - TEA" },
 
-    { prof:"ING",   nombre:"Leady Jazmín Hernández Pozos",      oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"BIÓL",  nombre:"José Antúnez Reyes",               oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Sinaí Pérez Colorado",             oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Luis Gerardo Sánchez Sosa",        oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Rufino Domínguez Rincón",          oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Josefina Santiz Sánchez",          oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"ING",   nombre:"Ana Lilia Medina Morales",         oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" },
-    { prof:"MVZ",   nombre:"Diego Aurelio Díaz Ramírez",       oisa:"Veracruz",        estado:"Veracruz",        tipo:"Puerto",     actividad:"TEA" }
+    { prof:"ING",   nombre:"Leady Jazmín Hernández Pozos",      oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"BIÓL",  nombre:"José Antúnez Reyes",                oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Sinaí Pérez Colorado",              oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Luis Gerardo Sánchez Sosa",         oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Rufino Domínguez Rincón",           oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Josefina Santiz Sánchez",           oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"ING",   nombre:"Ana Lilia Medina Morales",          oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" },
+    { prof:"MVZ",   nombre:"Diego Aurelio Díaz Ramírez",        oisa:"Veracruz",        estado:"Veracruz",         tipo:"Puerto",     actividad:"TEA" }
   ];
 
   // ====== Helpers ======
@@ -403,20 +447,15 @@
     attribution: "&copy; OpenStreetMap contributors"
   }).addTo(map);
 
-  // Asegura que Leaflet “recalcule” tamaño (clave para embeds)
   setTimeout(function(){ map.invalidateSize(true); }, 350);
   window.addEventListener("resize", function(){ map.invalidateSize(true); });
 
   // ====== Marcadores por OISA ======
-  var markerIndex = {};       // oisa -> marker
-  var markerMeta  = {};       // oisa -> {estado,tipo}
-  var markersList = [];       // para filtros (estado, tipo)
-
+  var markersList = [];
   var bounds = [];
+
   Object.keys(oisas).forEach(function(oisaName){
     var meta = oisas[oisaName];
-    markerMeta[oisaName] = meta;
-
     var lista = peopleByOisa[oisaName] || [];
     var total = lista.length;
 
@@ -435,15 +474,13 @@
       "<br><strong>Total de personal:</strong> "+total
     );
 
-    markerIndex[oisaName] = m;
     markersList.push({ oisa:oisaName, estado:meta.estado, tipo:meta.tipo, marker:m });
-
     bounds.push([meta.lat, meta.lng]);
   });
 
   if (bounds.length) map.fitBounds(bounds,{padding:[20,20]});
 
-  // ====== UI: filtros ======
+  // ====== UI ======
   var fAeropuerto = document.getElementById("fAeropuerto");
   var fPuerto     = document.getElementById("fPuerto");
   var fFrontera   = document.getElementById("fFrontera");
@@ -454,7 +491,6 @@
   var oisaListEl  = document.getElementById("oisaList");
   var shadeStates = document.getElementById("shadeStates");
 
-  // Construir dropdown de estados desde metadata OISA (no desde personal)
   var estadosSet = {};
   markersList.forEach(function(x){ estadosSet[x.estado] = true; });
   Object.keys(estadosSet).sort().forEach(function(e){
@@ -469,15 +505,13 @@
            (t==="Frontera"   && fFrontera.checked);
   }
 
-  // ====== Sidebar: tarjetas por OISA con checkbox + personal ======
-  var oisaVisibility = {}; // oisa -> boolean (checkbox)
+  var oisaVisibility = {};
   Object.keys(oisas).forEach(function(k){ oisaVisibility[k] = true; });
 
   function renderSidebar(){
     var q = normalize(searchBox.value);
     oisaListEl.innerHTML = "";
 
-    // Ordenar por OISA
     var oisaKeys = Object.keys(oisas).sort(function(a,b){
       return a.localeCompare(b, "es");
     });
@@ -486,7 +520,6 @@
       var meta = oisas[oisaName];
       var lista = peopleByOisa[oisaName] || [];
 
-      // Filtro por búsqueda (OISA, estado, nombre)
       if (q){
         var hay = false;
         if (normalize(oisaName).includes(q)) hay = true;
@@ -514,7 +547,7 @@
       cb.checked = !!oisaVisibility[oisaName];
       cb.addEventListener("change", function(){
         oisaVisibility[oisaName] = cb.checked;
-        aplicar(); // refresca mapa
+        aplicar();
       });
 
       var metaDiv = document.createElement("div");
@@ -542,7 +575,6 @@
       head.appendChild(metaDiv);
       card.appendChild(head);
 
-      // Personal
       var people = document.createElement("div");
       people.className = "people";
 
@@ -567,7 +599,6 @@
     });
   }
 
-  // ====== Aplicar filtros al mapa ======
   function aplicar(){
     var est = estadoSelect.value;
     var visibles = 0;
@@ -590,14 +621,10 @@
   }
 
   [fAeropuerto,fPuerto,fFrontera,estadoSelect].forEach(function(el){
-    el.addEventListener("change", function(){
-      aplicar();
-    });
+    el.addEventListener("change", aplicar);
   });
 
-  searchBox.addEventListener("input", function(){
-    renderSidebar();
-  });
+  searchBox.addEventListener("input", renderSidebar);
 
   btnReset.addEventListener("click", function(){
     fAeropuerto.checked = true;
@@ -609,7 +636,7 @@
     aplicar();
   });
 
-  // ====== Leyenda (tipo de oficina) ======
+  // ====== Leyenda tipo ======
   var legendTipo = L.control({position:"bottomright"});
   legendTipo.onAdd = function(){
     var div = L.DomUtil.create("div","legend");
@@ -622,17 +649,15 @@
   };
   legendTipo.addTo(map);
 
-  // ====== Choropleth de estados (por # de personas) ======
+  // ====== Choropleth estados ======
   var statesLayer = null;
   var legendStates = null;
 
   function getStateNameFromFeature(props){
-    // Este GeoJSON suele traer "name". Dejamos fallback.
     return props && (props.name || props.NOMBRE || props.estado || props.ESTADO || "");
   }
 
   function rampColor(n){
-    // Escala simple (claro->oscuro) basada en cantidad
     if (n >= 20) return "#0f172a";
     if (n >= 15) return "#1f2937";
     if (n >= 10) return "#334155";
@@ -681,6 +706,7 @@
   }
 
   function loadStatesGeoJSON(){
+    diag.style.display = "block";
     diag.textContent = "Diagnóstico: cargando GeoJSON de estados…";
 
     fetch(STATES_GEOJSON_URL)
@@ -697,22 +723,21 @@
         statesLayer = L.geoJSON(geo, {
           style: styleState,
           onEachFeature: function(feature, layer){
-  var stNameRaw = getStateNameFromFeature(feature.properties);
-  var stNameKey = normalize(stNameRaw);
-  var n = countByState[stNameKey] || 0;
+            var stNameRaw = getStateNameFromFeature(feature.properties);
+            var stNameKey = normalize(stNameRaw);
+            var n = countByState[stNameKey] || 0;
 
-  // Si no hay personal, no mostramos tooltip y evitamos interacción
-  if (n === 0) {
-    layer.options.interactive = false;
-    return;
-  }
+            // Sin personal: no tooltip, no interacción
+            if (n === 0) {
+              layer.options.interactive = false;
+              return;
+            }
 
-  // Tooltip solo si hay personal
-  layer.bindTooltip(
-    stNameRaw + ": " + n,
-    { sticky:true, direction:"auto" }
-  );
-}
+            layer.bindTooltip(
+              stNameRaw + ": " + n,
+              { sticky:true, direction:"auto" }
+            );
+          }
         });
 
         if (shadeStates.checked){
@@ -726,58 +751,10 @@
       .catch(function(err){
         diag.style.display = "block";
         diag.textContent = "Diagnóstico: no se pudo cargar GeoJSON de estados. " + err.message;
-        // No detenemos el mapa, solo desactivamos el sombreado
         shadeStates.checked = false;
         removeStatesLegend();
       });
   }
-/* ===============================
-   MODO MÓVIL / RESPONSIVE
-   =============================== */
-@media (max-width: 900px){
-
-  .app{
-    flex-direction: column;
-    height: auto;
-    min-height: auto;
-  }
-
-  #sidebar{
-    width: 100%;
-    min-width: 100%;
-    max-height: 55vh;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-
-  #mapWrap{
-    width: 100%;
-    height: 65vh;
-    min-height: 420px;
-  }
-
-  #map{
-    min-height: 420px;
-  }
-
-  /* Ajustar pills superiores */
-  .mapTopBar{
-    left: 8px;
-    right: 8px;
-    gap: 6px;
-  }
-
-  .pill{
-    font-size: 11px;
-    padding: 5px 8px;
-  }
-
-  /* Leyendas más compactas */
-  .legend{
-    font-size: 12px;
-    padding: 8px 10px;
-  }
-}
 
   shadeStates.addEventListener("change", function(){
     if (!statesLayer){
@@ -793,7 +770,7 @@
     }
   });
 
-  // ====== Inicializar UI ======
+  // ====== Inicializar ======
   renderSidebar();
   aplicar();
   loadStatesGeoJSON();
